@@ -33,6 +33,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00eaf7', end
 
 input:focus, textarea:focus {
 	box-shadow: 0px 0px 5px #0acbd6!important;
+  color: #00bcd4!important;
 }
 textarea, input {
 	border-radius: 5px;
