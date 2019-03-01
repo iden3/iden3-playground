@@ -24,7 +24,7 @@
 <body>
   <br>
   <div class="float-right">
-    <div class="btn btn-outline-light btn-sm">Hard reset</div>
+    <div onclick="appReset()" class="btn o_secundary btn-sm">Hard reset</div>
     <div class="onoffswitch" style="display:inline-block;margin: 10px;" title="change theme">
       <input onclick="switchThemeClick()" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="themeSwitcher" >
       <label class="onoffswitch-label" for="themeSwitcher"></label>
@@ -34,21 +34,62 @@
   <hr>
   <p>This is the iden3 playground, to test wallet & libs functionallities</p>
   <div class="row">
-    <div class="col-lg-4">
+    <div class="col-lg-5">
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Wallet</h5>
-          <p class="card-text">Create a new wallet with one identity</p>
-          <a onclick="newWallet()" class="btn btn-primary o_primary float-right">New Wallet</a>
-          <br><br>
-          <textarea id="masterSeed-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="seed" readonly="readonly"></textarea>
-          <textarea id="idaddr-result" rows="1" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="idAddr" readonly="readonly"></textarea>
-          <textarea id="proofClaimOperationalKey-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAuthorizeOperationalKey" readonly="readonly"></textarea>
-          <br>
-          <br><br>
-
           <hr>
-          <p class="card-text">Assign a name to identity</p>
+          <input id="passphrase" type="password" class="form-control" placeholder="encryption passphrase">
+          <a onclick="newWallet()" class="btn btn-primary o_primary float-right">New Wallet</a>
+          <p class="card-text">Create a new wallet with one identity</p>
+          <br>
+
+          <div class="row">
+            <span class="col-sm-3">seed:</span>
+            <textarea id="masterSeed-result" rows="2" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="seed" readonly="readonly"></textarea>
+          </div>
+          <div class="row">
+            <span class="col-sm-3">addrKOp:</span>
+            <textarea id="keyAddressOp-result" rows="1" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="addrKOp" readonly="readonly"></textarea>
+          </div>
+          <div class="row">
+            <span class="col-sm-3">pubKOp:</span>
+            <textarea id="keyPublicOp-result" rows="1" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="pubKOp" readonly="readonly"></textarea>
+          </div>
+          <div class="row">
+            <span class="col-sm-3">kRec:</span>
+            <textarea id="keyRecover-result" rows="1" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="kRec" readonly="readonly"></textarea>
+          </div>
+          <div class="row">
+            <span class="col-sm-3">kRev:</span>
+            <textarea id="keyRevoke-result" rows="1" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="kRev" readonly="readonly"></textarea>
+          </div>
+          <div class="row">
+            <span class="col-sm-3">idAddr:</span>
+            <textarea id="idaddr-result" rows="1" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="idAddr" readonly="readonly"></textarea>
+          </div>
+          <div class="row">
+            <span class="col-sm-3">proofKSign:</span>
+            <textarea id="proofClaimOperationalKey-result" rows="3" cols="80"
+              class="textarea-blue col-sm-9" onclick="selectAndCopy(this)"
+              placeholder="proof of ClaimAuthorizeOperationalKey" readonly="readonly"></textarea>
+          </div>
+          <br>
+
+          <h4>Assign name</h4>
+          <hr>
           <input id="nameInput" class="form-control" type="text" placeholder="name" value="johndoe" style="width:150px; display:inline;"> @iden3.eth
           <br>
 
@@ -58,37 +99,47 @@
           <textarea id="assignName-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAssignName" readonly="readonly"></textarea>
           <br>
 
-          <hr>
+
         </div>
       </div>
       <br>
     </div>
-    <div class="col-lg-8">
+    <div class="col-lg-7">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Actions</h5>
+          <h5 class="card-title">Login</h5>
+          <hr>
+          <p class="card-text">Paste here the QR data to perform a login</p>
+          <input id="qr-login-input" type="text" class="form-control" style="width:70%; display:inline;" placeholder="QR data">
+          <a onclick="login()" style="width:28%;"class="btn btn-primary o_primary float-right">Login</a>
+          <br><br>
+          <textarea id="login-result" rows="2" cols="80" class="textarea-blue"
+            onclick="selectAndCopy(this)" placeholder="login data packet" readonly="readonly"></textarea>
+          <br>
+          <br>
+          <h5 class="card-title">Sign data</h5>
+          <hr>
           <p class="card-text">Login, sign packet, etc</p>
           <input id="toSign" type="text" class="form-control" style="width:300px; display:inline;" placeholder="data to sign">
           <a onclick="sign()" class="btn btn-primary o_primary">Sign</a>
           <br><br>
-          <textarea id="signedPacket-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="signed packet" readonly="readonly"></textarea>
-          <br>
-          <br>
-          <br><br>
+          <textarea id="signedPacket-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="signed packet" readonly="readonly"></textarea>
+
         </div>
       </div>
       <br>
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Zero Knowledge Proofs</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <hr>
+          <p class="card-text">Generate and verify ZKP</p>
           <br><br>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="loading-screen" style="position:absolute; width:100%;height:100%; top:0; padding-top:20%; z-index:1000;background:#ffffff;text-align:center;">
+  <div id="loading-screen" style="position:absolute; width:100%;height:100%; top:0; left:0; padding-top:20%; z-index:1000;background:#ffffff;text-align:center;">
     <h2>iden3 playground</h2>
     <div class="cssload-loader-inner">
       <div class="cssload-cssload-loader-line-wrap-wrap">
@@ -112,15 +163,22 @@
   <script src="node_modules/toastr/build/toastr.min.js"></script>
   <script>
   // color theme
-  let theme = "light";
+  let theme = localStorage.getItem("theme");
+  if (theme==="dark-theme") {
+    document.getElementById("themeSwitcher").checked = true;
+    document.body.className = theme;
+  }
   function switchThemeClick() {
-    console.log(document.getElementById("themeSwitcher").checked);
-    if (document.getElementById("themeSwitcher").checked === true) {
-      theme = "dark-theme";
-    } else {
+    theme = localStorage.getItem("theme");
+    if (theme==="dark-theme") {
+      document.getElementById("themeSwitcher").checked = false;
       theme = "light";
+      localStorage.setItem("theme", theme);
+    } else {
+      document.getElementById("themeSwitcher").checked = true;
+      theme = "dark-theme";
+      localStorage.setItem("theme", theme);
     }
-    console.log(theme);
     document.body.className = theme;
   }
 

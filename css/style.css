@@ -23,16 +23,20 @@ a:hover {
 hr {
 	height: 2px;
 
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#8e32ff+0,00eaf7+75 */
-background: #8e32ff; /* Old browsers */
-background: -moz-linear-gradient(left, #8e32ff 0%, #00eaf7 75%); /* FF3.6-15 */
-background: -webkit-linear-gradient(left, #8e32ff 0%,#00eaf7 75%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right, #8e32ff 0%,#00eaf7 75%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8e32ff', endColorstr='#00eaf7',GradientType=1 ); /* IE6-9 */
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#00eaf7+25,b075ff+100 */
+background: #00eaf7; /* Old browsers */
+background: -moz-linear-gradient(left, #00eaf7 25%, #b075ff 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, #00eaf7 25%,#b075ff 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, #00eaf7 25%,#b075ff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00eaf7', endColorstr='#b075ff',GradientType=1 ); /* IE6-9 */
 }
 
 input:focus, textarea:focus {
 	box-shadow: 0px 0px 5px #0acbd6!important;
+}
+textarea, input {
+	border-radius: 5px;
+	margin-bottom: 5px;
 }
 
 .btn {
@@ -46,6 +50,16 @@ input:focus, textarea:focus {
 }
 .o_primary:hover {
 	border: 1px solid #0acbd6;
+	background: none!important;
+}
+.o_secundary {
+	border: 1px solid #b075ff;
+	color: #b075ff;
+	background: none!important;
+}
+.o_secundary:hover {
+	border: 1px solid #d4b3ff;
+	color: #d4b3ff;
 	background: none!important;
 }
 
@@ -64,4 +78,8 @@ input:focus, textarea:focus {
   max-width: 100%;
   color: #00bcd4;
   background-color: transparent;
+}
+
+.inline {
+	display: inline-box;
 }
