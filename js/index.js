@@ -8,6 +8,7 @@ const db = new iden3.Db();
 // new key container using localStorage
 const kc = new iden3.KeyContainer('localStorage', db);
 let passphrase = '';
+passphrase = document.getElementById('kc-passphrase').value;
 let id = {};
 let idName = '';
 let idAddr = '';
@@ -17,7 +18,18 @@ let keyAddressOp = '';
 let keyPublicOp = '';
 let keyRecover = '';
 let keyRevoke = '';
+let keys = [];
 
+if(localStorage.getItem("id")) {
+  const idStorage = JSON.parse(localStorage.getItem("id"));
+  id = new iden3.Id(idStorage.keyOperationalPub, idStorage.keyRecover, idStorage.keyRevoke, idStorage.relay, idStorage.relayAddr, '', undefined, 0);
+  id.idAddr = idStorage.idAddr;
+}
+console.log("id", id);
+if(localStorage.getItem("keys")) {
+  keys = JSON.parse(localStorage.getItem("keys"));
+  printKeys(keys);
+}
 // load wallet from localstorage
 document.getElementById('masterSeed-result').innerHTML = localStorage.getItem("masterSeed");
 document.getElementById('keyAddressOp-result').innerHTML = localStorage.getItem("keyAddressOp");
@@ -25,6 +37,7 @@ document.getElementById('keyPublicOp-result').innerHTML = localStorage.getItem("
 document.getElementById('keyRecover-result').innerHTML = localStorage.getItem("keyRecover");
 document.getElementById('keyRevoke-result').innerHTML = localStorage.getItem("keyRevoke");
 document.getElementById('idaddr-result').innerHTML = localStorage.getItem("idAddr");
+document.getElementById('idaddr-header').innerHTML = localStorage.getItem("idAddr");
 document.getElementById('proofClaimOperationalKey-result').innerHTML = localStorage.getItem("proofKSign");
 
 
@@ -66,7 +79,9 @@ function newWallet() {
 
     idAddr = createIdRes.idAddr;
     document.getElementById('idaddr-result').innerHTML = idAddr;
+    document.getElementById('idaddr-header').innerHTML = idAddr;
     localStorage.setItem("idAddr", idAddr);
+    localStorage.setItem("id", JSON.stringify(id));
 
     proofKSign = createIdRes.proofClaim;
     document.getElementById('proofClaimOperationalKey-result').innerHTML = JSON.stringify(proofKSign);
@@ -80,10 +95,34 @@ function newWallet() {
   });
 }
 
-function assignName() {
-  console.log(id);
+function printKeys(keys) {
+  let html = '';
+  for(let i=0; i<keys.length; i++) {
+    html += `<textarea rows="1" cols="80" class="textarea-blue col-sm-9" onclick="selectAndCopy(this)" readonly="readonly">`
+    + keys[i] + `</textarea>`;
+  }
+  document.getElementById('keysBox').innerHTML = html;
+}
+
+function newKey() {
+  passphrase = document.getElementById('kc-passphrase').value;
   kc.unlock(passphrase);
-  // console.log('Bind label to an identity');
+  const keyLabel = 'testKey' + keys.length;
+  try {
+    const newKey = id.createKey(kc, keyLabel, true);
+    keys.push(newKey);
+    printKeys(keys);
+    localStorage.setItem("keys", JSON.stringify(keys));
+    toastr.success("New key created");
+  } catch(err) {
+    console.error(err);
+    toastr.error("Error with passphrase");
+  }
+}
+
+function assignName() {
+  passphrase = document.getElementById('kc-passphrase').value;
+  kc.unlock(passphrase);
   // bind the identity address to a label. It send required data to name-resolver service and name-resolver issue a claim 'assignName' binding identity address with label
   idName = document.getElementById('nameInput').value;
   id.bindId(kc, idName)
@@ -126,6 +165,7 @@ function appReset() {
 }
 
 function exportBackup() {
+    passphrase = document.getElementById('kc-passphrase').value;
     kc.unlock(passphrase);
     const lsEncrypted = db.exportWallet(kc);
     console.log(lsEncrypted);
@@ -134,6 +174,7 @@ function exportBackup() {
 }
 
 function importBackup() {
+    passphrase = document.getElementById('kc-passphrase').value;
     kc.unlock(passphrase);
     let seedBackup = document.getElementById('masterSeed-input').innerHTML;
     let toImport = document.getElementById('importBackup').innerHTML;

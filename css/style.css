@@ -38,6 +38,7 @@ input:focus, textarea:focus {
 textarea, input {
 	border-radius: 5px;
 	margin-bottom: 5px;
+	padding: 10px;
 }
 
 .btn {
@@ -52,6 +53,9 @@ textarea, input {
 .o_primary:hover {
 	border: 1px solid #0acbd6;
 	background: none!important;
+}
+.t_primary {
+	color: #0acbd6;
 }
 .o_secundary {
 	border: 1px solid #b075ff;

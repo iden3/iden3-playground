@@ -29,7 +29,8 @@
       <label class="onoffswitch-label" for="themeSwitcher"></label>
     </div>
   </div>
-  <h2>iden3-playground</h2>
+  <h2 style="display:inline;" >iden3-playground</h2>
+  <div id="idaddr-header" class="t_primary" style="display:inline;margin-left: 20px;"></div>
   <hr>
   <p>This is the iden3 playground, to test wallet & libs functionallities</p>
   <div class="row">
@@ -82,15 +83,11 @@
               </div>
               <br>
 
-              <h4>Assign name</h4>
+              <h5 class="card-title">Keys</h5>
               <hr>
-              <input id="nameInput" class="form-control" type="text" placeholder="name" value="johndoe" style="width:150px; display:inline;"> @iden3.eth
-              <br>
+              <div onclick="newKey()" class="btn o_primary float-right">New Key</div>
+              <div id="keysBox"></div>
 
-              <a onclick="assignName()" class="btn btn-primary o_primary float-right">Assign Name</a>
-              <br><br>
-
-              <textarea id="assignName-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAssignName" readonly="readonly"></textarea>
             </div>
             <div class="tab-pane fade" id="nav-backup" role="tabpanel" aria-labelledby="nav-backup-tab">
               <h4>Backup</h4>
@@ -121,6 +118,15 @@
     <div class="col-lg-7">
       <div class="card">
         <div class="card-body">
+          <h4>Assign name</h4>
+          <hr>
+          <input id="nameInput" class="form-control" type="text" placeholder="name" value="johndoe" style="width:150px; display:inline;"> @iden3.eth
+          <br>
+
+          <a onclick="assignName()" class="btn btn-primary o_primary float-right">Assign Name</a>
+          <br><br>
+
+          <textarea id="assignName-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAssignName" readonly="readonly"></textarea>
           <h5 class="card-title">Login</h5>
           <hr>
           <p class="card-text">Paste here the QR data to perform a login</p>
