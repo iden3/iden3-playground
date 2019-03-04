@@ -176,12 +176,15 @@ function exportBackup() {
 function importBackup() {
     passphrase = document.getElementById('kc-passphrase').value;
     kc.unlock(passphrase);
-    let seedBackup = document.getElementById('masterSeed-input').innerHTML;
-    let toImport = document.getElementById('importBackup').innerHTML;
+    let seedBackup = document.getElementById('masterSeed-input').value;
+    let toImport = document.getElementById('importBackup').value;
     const ack = db.importWallet(seedBackup, kc, toImport);
     if (!ack) {
       toastr.error('Error importing backup');
     } else {
       toastr.success("Backup imported");
+      setTimeout(function(){
+        location.reload();
+      }, 500);
     }
 }
