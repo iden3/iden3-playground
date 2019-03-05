@@ -59,12 +59,12 @@ textarea, input {
 }
 .o_secundary {
 	border: 1px solid #b075ff;
-	color: #b075ff;
+	color: #b075ff!important;
 	background: none!important;
 }
 .o_secundary:hover {
 	border: 1px solid #d4b3ff;
-	color: #d4b3ff;
+	color: #d4b3ff!important;
 	background: none!important;
 }
 

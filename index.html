@@ -49,6 +49,16 @@
             <div class="tab-pane fade show active" id="nav-wallet" role="tabpanel" aria-labelledby="nav-wallet-tab">
               <h5 class="card-title">Wallet</h5>
               <hr>
+              <div class="row">
+                <div class="col-sm-4">
+                  Relay URL:
+                </div>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="relayUrl" value="http://127.0.0.1:8000/api/unstable" placeholder="relay url">
+                </div>
+              </div>
+              <a onclick="loadRelay()" class="btn btn-primary o_primary float-right">Load Relay</a>
+
               <input id="kc-passphrase" type="password" class="form-control" placeholder="keyContainer encryption passphrase">
               <a onclick="newWallet()" class="btn btn-primary o_primary float-right">New Wallet</a>
               <p class="card-text">Create a new wallet with one identity</p>
@@ -107,6 +117,42 @@
               <textarea id="importBackup" rows="3" cols="80" class="textarea-blue" onclick="select(this)" placeholder="import backup"></textarea>
 
               <a onclick="importBackup()" class="btn btn-primary o_primary float-right">Import Backup</a>
+
+              <br><br>
+              <h4>Backup Server</h4>
+              <hr>
+
+              <div class="row">
+                <div class="col-sm-5">
+                  Backup Server URL:
+                </div>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" id="backupUrl" value="http://127.0.0.1:5000/api/unstable" placeholder="backup server url">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <input type="text" class="form-control" id="backupUsername" placeholder="username">
+                </div>
+                <div class="col-sm-6">
+                  <input type="password" class="form-control" id="backupPassword" placeholder="password">
+                </div>
+              </div>
+              <a onclick="registerBackup()" class="btn btn-block btn-primary o_secundary" style="margin-top:10px;">Register</a>
+              <br>
+              <div class="row">
+                <div class="col-sm-6">
+                  <a onclick="uploadBackup()" class="btn btn-block btn-primary o_primary">Upload Backup</a>
+                </div>
+                <div class="col-sm-6">
+                  <a onclick="downloadBackup()" class="btn btn-block btn-primary o_primary">Download Backup</a>
+                </div>
+              </div>
+
+
+
+
             </div>
             <div class="tab-pane fade" id="nav-notifications" role="tabpanel" aria-labelledby="nav-notifications-tab">
               <h4>Notifications</h4>
