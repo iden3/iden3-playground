@@ -288,7 +288,7 @@ function downloadBackup() {
       }, 500);
     }
   });
-  
+
 // Notification Tab
 function updateNotificationsPanel(){
   const notificationsAddr = localStorage.getItem("idAddr");
@@ -334,3 +334,6 @@ function getNotifications(){
 function deleteNotifications(){
 
 }
+
+// const hello = await axiosGetDebug(`${loginUrl}/auth/hello`, { headers: { Authorization: `Bearer ${token.data.token}` } });
+    
