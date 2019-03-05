@@ -1,7 +1,13 @@
+// Relay
 const relayAddr = '0xe0fbce58cfaa72812103f003adce3f284fe5fc7c';
-// const relayUrl = 'http://127.0.0.1:8000/api/unstable';
-const relayUrl = 'https://relay.iden3.io/api/unstable';
+const relayUrl = 'http://127.0.0.1:8000/api/unstable';
+// const relayUrl = 'https://relay.iden3.io/api/unstable';
 const relay = new iden3.Relay(relayUrl);
+
+// Name server
+const nameServerUrl = 'http://127.0.0.1:7000/api/unstable';
+// const nameServerUrl = 'https://relay.iden3.io/api/unstable';
+const nameServer = new iden3.NameServer(nameServerUrl);
 
 // new database
 const db = new iden3.Db();
@@ -22,7 +28,7 @@ let keys = [];
 
 if(localStorage.getItem("id")) {
   const idStorage = JSON.parse(localStorage.getItem("id"));
-  id = new iden3.Id(idStorage.keyOperationalPub, idStorage.keyRecover, idStorage.keyRevoke, idStorage.relay, idStorage.relayAddr, '', undefined, 0);
+  id = new iden3.Id(idStorage.keyOperationalPub, idStorage.keyRecover, idStorage.keyRevoke, idStorage.relay, idStorage.relayAddr,idStorage.nameServer, '', undefined, 0);
   id.idAddr = idStorage.idAddr;
 }
 console.log("id", id);
@@ -39,7 +45,6 @@ document.getElementById('keyRevoke-result').innerHTML = localStorage.getItem("ke
 document.getElementById('idaddr-result').innerHTML = localStorage.getItem("idAddr");
 document.getElementById('idaddr-header').innerHTML = localStorage.getItem("idAddr");
 document.getElementById('proofClaimOperationalKey-result').innerHTML = localStorage.getItem("proofKSign");
-
 
 function newWallet() {
   passphrase = document.getElementById('kc-passphrase').value;
@@ -71,8 +76,8 @@ function newWallet() {
 
 
   // create a new id object
-  id = new iden3.Id(keyPublicOp, keyRecover, keyRevoke, relay, relayAddr, '', undefined, 0);
-  id.createID()
+  id = new iden3.Id(keyPublicOp, keyRecover, keyRevoke, relay, relayAddr, nameServer, '', undefined, 0);
+  id.createId()
   .then((createIdRes) => {
     // Successfull create identity api call to relay
     console.log(createIdRes.idAddr); // Identity counterfactoual address
@@ -125,12 +130,15 @@ function assignName() {
   kc.unlock(passphrase);
   // bind the identity address to a label. It send required data to name-resolver service and name-resolver issue a claim 'assignName' binding identity address with label
   idName = document.getElementById('nameInput').value;
-  id.bindId(kc, idName)
+  proofKSignJson = document.getElementById('proofClaimOperationalKey-result').value;
+  const proofKSignOpPub = JSON.parse(proofKSignJson);
+  console.log(proofKSignOpPub);
+  id.bindId(kc, id.keyOperationalPub, proofKSignOpPub, idName)
     .then((bindRes) => {
       console.log(bindRes.data);
       proofEthName = bindRes.data;
       // request idenity address to name-resolver ( currently name-resolver service is inside relay) from a given label
-      relay.resolveName(`${idName}@iden3.io`)
+      nameServer.resolveName(`${idName}@iden3.io`)
         .then((resolveRes) => {
           const idAddress = resolveRes.data.idAddr;
           console.log(`${idName}@iden3.io associated with addres: ${idAddress}`);
@@ -187,4 +195,19 @@ function importBackup() {
         location.reload();
       }, 500);
     }
+}
+
+// Notification Tab
+function updateNotificationsPanel(){
+  const notificationsAddr = localStorage.getItem("idAddr");
+  if(notificationsAddr) {
+    document.getElementById('notification-idAddress').innerHTML = "Send notifications to address: " + localStorage.getItem("idAddr");
+  }
+  else {
+    document.getElementById('notification-idAddress').innerHTML = "There is no address to send notifications";
+  }
+}
+
+function sendNotifications(){
+
 }

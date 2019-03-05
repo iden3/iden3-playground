@@ -41,6 +41,7 @@
             <a class="nav-item nav-link active" id="nav-wallet-tab" data-toggle="tab" href="#nav-wallet" role="tab" aria-controls="nav-wallet" aria-selected="true">Wallet</a>
             <a class="nav-item nav-link" id="nav-backup-tab" data-toggle="tab" href="#nav-backup" role="tab" aria-controls="nav-backup" aria-selected="false">Backup</a>
             <a class="nav-item nav-link" id="nav-settings-tab" data-toggle="tab" href="#nav-settings" role="tab" aria-controls="nav-settings" aria-selected="false">Settings</a>
+            <a class="nav-item nav-link" id="nav-notifications-tab" onfocus="updateNotificationsPanel()" data-toggle="tab" href="#nav-notifications" role="tab" aria-controls="nav-notifications" aria-selected="false">Notifications</a>
           </div>
         </nav>
         <div class="card-body">
@@ -106,6 +107,16 @@
               <textarea id="importBackup" rows="3" cols="80" class="textarea-blue" onclick="select(this)" placeholder="import backup"></textarea>
 
               <a onclick="importBackup()" class="btn btn-primary o_primary float-right">Import Backup</a>
+            </div>
+            <div class="tab-pane fade" id="nav-notifications" role="tabpanel" aria-labelledby="nav-notifications-tab">
+              <h4>Notifications</h4>
+              <hr>
+              <p id="notification-idAddress" style="text-align: center"></p>
+              <a onclick="sendNotifications()" style="margin-left: 37.5%; width:25%;" class="btn btn-primary o_primary">Send Notifications</a>
+
+
+
+
             </div>
             <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
               <div onclick="appReset()" class="btn o_secundary">Hard reset</div>
