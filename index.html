@@ -159,9 +159,22 @@
               <hr>
               <p id="notification-idAddress" style="text-align: center"></p>
               <a onclick="sendNotifications()" style="margin-left: 37.5%; width:25%;" class="btn btn-primary o_primary">Send Notifications</a>
-
-
-
+              <br><br>
+              <p style="text-align: center">Notifications available</p>
+              <textarea id="notifications-list" rows="3" cols="80" class="textarea-blue" placeholder="List of notifications" readonly="readonly"></textarea>
+              <br><br>
+              <a onclick="loginNotifications()" style="margin-left: 37.5%; width:25%;" class="btn btn-primary o_primary">Login to<br>notification server</a>
+              <br><br>
+              <div class="row">
+                <span class="col-sm-2" style="text-align: center">Token:</span>
+                <textarea id="token-result" rows="1" class="textarea-blue col-sm-10" onclick="selectAndCopy(this)" placeholder="token" readonly="readonly"></textarea>
+              </div>
+              <br><br>
+              <a onclick="getNotifications()" style="width:40%;" class="btn btn-primary o_primary float-left">Get Notifications</a>
+              <a onclick="deleteNotifications()" style="width:40%;" class="btn btn-primary o_primary float-right">Delete Notifications</a>
+              <br><br>
+              <textarea id="get-value" rows="2" style="width:40%;" class="textarea-blue float-left" placeholder="Get notifications" readonly="readonly"></textarea>
+              <textarea id="delete-value" rows="2" style="width:40%;" class="textarea-blue float-right" placeholder="Delete notifications" readonly="readonly"></textarea>
 
             </div>
             <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
