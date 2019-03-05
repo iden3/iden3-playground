@@ -1,8 +1,7 @@
 // Relay
 const relayAddr = '0xe0fbce58cfaa72812103f003adce3f284fe5fc7c';
-const relayUrl = 'http://127.0.0.1:8000/api/unstable';
-// const relayUrl = 'https://relay.iden3.io/api/unstable';
-const relay = new iden3.Relay(relayUrl);
+let relayUrl = 'http://127.0.0.1:8000/api/unstable';
+let relay;
 
 // Name server
 const nameServerUrl = 'http://127.0.0.1:7000/api/unstable';
@@ -25,6 +24,7 @@ let keyPublicOp = '';
 let keyRecover = '';
 let keyRevoke = '';
 let keys = [];
+let backupService;
 
 if(localStorage.getItem("id")) {
   const idStorage = JSON.parse(localStorage.getItem("id"));
@@ -45,6 +45,12 @@ document.getElementById('keyRevoke-result').innerHTML = localStorage.getItem("ke
 document.getElementById('idaddr-result').innerHTML = localStorage.getItem("idAddr");
 document.getElementById('idaddr-header').innerHTML = localStorage.getItem("idAddr");
 document.getElementById('proofClaimOperationalKey-result').innerHTML = localStorage.getItem("proofKSign");
+
+function loadRelay() {
+  relayUrl = document.getElementById('relayUrl').value;
+  relay = new iden3.Relay(relayUrl);
+  toastr.info('Relay loaded');
+}
 
 function newWallet() {
   passphrase = document.getElementById('kc-passphrase').value;
@@ -172,6 +178,25 @@ function appReset() {
   location.reload();
 }
 
+
+// Notification Tab
+function updateNotificationsPanel(){
+  const notificationsAddr = localStorage.getItem("idAddr");
+  if(notificationsAddr) {
+    document.getElementById('notification-idAddress').innerHTML = "Send notifications to address: " + localStorage.getItem("idAddr");
+  }
+  else {
+    document.getElementById('notification-idAddress').innerHTML = "There is no address to send notifications";
+  }
+}
+
+function sendNotifications(){
+
+}
+
+//
+// BACKUP
+//
 function exportBackup() {
     passphrase = document.getElementById('kc-passphrase').value;
     kc.unlock(passphrase);
@@ -197,17 +222,69 @@ function importBackup() {
     }
 }
 
-// Notification Tab
-function updateNotificationsPanel(){
-  const notificationsAddr = localStorage.getItem("idAddr");
-  if(notificationsAddr) {
-    document.getElementById('notification-idAddress').innerHTML = "Send notifications to address: " + localStorage.getItem("idAddr");
-  }
-  else {
-    document.getElementById('notification-idAddress').innerHTML = "There is no address to send notifications";
-  }
+function registerBackup() {
+  backupUrl = document.getElementById("backupUrl").value;
+  username = document.getElementById("backupUsername").value;
+  password = document.getElementById("backupPassword").value;
+  backupService = new iden3.Backup(backupUrl, username, password, true);
+  backupService.register().then((res) => {
+    console.log("res", res);
+    console.log("Backup register success");
+    toastr.success("Backup register success");
+  });
+
 }
 
-function sendNotifications(){
+function uploadBackup() {
+  passphrase = document.getElementById('kc-passphrase').value;
+  kc.unlock(passphrase);
+  const lsEncrypted = db.exportWallet(kc);
+
+
+  backupUrl = document.getElementById("backupUrl").value;
+  username = document.getElementById("backupUsername").value;
+  password = document.getElementById("backupPassword").value;
+  backupService = new iden3.Backup(backupUrl, username, password, true);
+
+  backupService.upload(lsEncrypted).then((res) => {
+    console.log("res", res);
+    console.log("Backup upload success");
+    toastr.success("Backup upload success");
+
+  });
+
+}
+
+function downloadBackup() {
+  if (document.getElementById('masterSeed-input').value=="") {
+    console.log("No seed specified");
+    toastr.error("No seed specified");
+    return;
+  }
+
+  backupUrl = document.getElementById("backupUrl").value;
+  username = document.getElementById("backupUsername").value;
+  password = document.getElementById("backupPassword").value;
+  backupService = new iden3.Backup(backupUrl, username, password, true);
+
+  backupService.download().then((res) => {
+    console.log("res", res);
+    console.log("Backup download success");
+    toastr.success("Backup download success");
+    passphrase = document.getElementById('kc-passphrase').value;
+    kc.unlock(passphrase);
+    let seedBackup = document.getElementById('masterSeed-input').value;
+    let toImport = document.getElementById('importBackup').value;
+    const ack = db.importWallet(seedBackup, kc, res.data.backup);
+    if (!ack) {
+      console.error('Error importing backup');
+      toastr.error('Error importing backup');
+    } else {
+      toastr.success("Backup imported");
+      setTimeout(function(){
+        location.reload();
+      }, 500);
+    }
+  });
 
 }
