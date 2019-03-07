@@ -143,6 +143,8 @@ function assignName() {
     .then((bindRes) => {
       console.log(bindRes.data);
       proofEthName = bindRes.data;
+      document.getElementById('assignName-result').innerHTML = JSON.stringify(proofEthName);
+      toastr.success("Assign name success");
       // request idenity address to name-resolver ( currently name-resolver service is inside relay) from a given label
       nameServer.resolveName(`${idName}@iden3.io`)
         .then((resolveRes) => {
@@ -287,4 +289,51 @@ function downloadBackup() {
     }
   });
 
+// Notification Tab
+function updateNotificationsPanel(){
+  const notificationsAddr = localStorage.getItem("idAddr");
+  if(notificationsAddr) {
+    document.getElementById('notification-idAddress').innerHTML = "Send notifications to address: " + localStorage.getItem("idAddr");
+  }
+  else {
+    document.getElementById('notification-idAddress').innerHTML = "There is no address to send notifications";
+  }
 }
+
+let counter = 0;
+
+function sendNotifications(){
+  const notificationList = document.getElementById('notifications-list').innerHTML;
+  document.getElementById('notifications-list').innerHTML = notificationList + counter.toString() + "\n"; 
+  counter++;
+}
+
+const loginUrl = 'http://localhost:9000';
+async function loginNotfications(){
+  // Ask notification server for 'signedPacket'
+  const login = await axiosGetDebug(`${loginUrl}/login`);
+  const sigReq = login.data.sigReq;
+  // Sign 'signedPacket'
+  const date = new Date();
+  const unixtime = Math.round((date).getTime() / 1000);
+  const expirationTime = unixtime + 60;
+  const signedPacket = iden3.protocols.login.signIdenAssertV01(sigReq, id.idAddr, `${name}@iden3.io`, proofEthName.proofAssignName, kc, ksign, proofKSign, expirationTime);
+  // Send back to notification server 'signIdenAssert' 
+  const token = await axiosPostDebug(`${loginUrl}/login`, {jws: signedPacket});
+  // Get Token authentication for notification server
+  const tokenString = "expire date: " + (token.data.expire).toString();
+  tokenString += "\n" + "token:" + (token.data.token).toString();
+}
+
+// Ask to notification server for last 10 notifications
+function getNotifications(){
+
+}
+
+// Delete last 10 notifications
+function deleteNotifications(){
+
+}
+
+// const hello = await axiosGetDebug(`${loginUrl}/auth/hello`, { headers: { Authorization: `Bearer ${token.data.token}` } });
+    
