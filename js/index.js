@@ -288,6 +288,7 @@ function downloadBackup() {
       }, 500);
     }
   });
+}
 
 // Notification Tab
 function updateNotificationsPanel(){
