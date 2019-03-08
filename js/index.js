@@ -1,108 +1,142 @@
 // Relay
-const relayAddr = '0xe0fbce58cfaa72812103f003adce3f284fe5fc7c';
-let relayUrl = 'http://127.0.0.1:8000/api/unstable';
-let relay;
+//const relayAddr = '0xe0fbce58cfaa72812103f003adce3f284fe5fc7c';
 
 // Name server
-const nameServerUrl = 'http://127.0.0.1:7000/api/unstable';
+//const nameServerUrl = 'http://127.0.0.1:7000/api/unstable';
 // const nameServerUrl = 'https://relay.iden3.io/api/unstable';
-const nameServer = new iden3.NameServer(nameServerUrl);
+
+//const notificationUrl = 'http://127.0.0.1:10000/api/unstable';
+//const notificationServer = new iden3.NotificationServer(notificationUrl);
 
 // new database
 const db = new iden3.Db();
 // new key container using localStorage
 const kc = new iden3.KeyContainer('localStorage', db);
-let passphrase = '';
-passphrase = document.getElementById('kc-passphrase').value;
-let id = {};
-let idName = '';
-let idAddr = '';
-let proofKSign = {};
-let proofEthName = {};
-let keyAddressOp = '';
-let keyPublicOp = '';
-let keyRecover = '';
-let keyRevoke = '';
-let keys = [];
-let backupService;
 
-if(localStorage.getItem("id")) {
-  const idStorage = JSON.parse(localStorage.getItem("id"));
-  id = new iden3.Id(idStorage.keyOperationalPub, idStorage.keyRecover, idStorage.keyRevoke, idStorage.relay, idStorage.relayAddr,idStorage.nameServer, '', undefined, 0);
-  id.idAddr = idStorage.idAddr;
+function getPassphrase() {
+  return document.getElementById('kc-passphrase').value;
 }
-console.log("id", id);
-if(localStorage.getItem("keys")) {
-  keys = JSON.parse(localStorage.getItem("keys"));
-  printKeys(keys);
-}
-// load wallet from localstorage
-document.getElementById('masterSeed-result').innerHTML = localStorage.getItem("masterSeed");
-document.getElementById('keyAddressOp-result').innerHTML = localStorage.getItem("keyAddressOp");
-document.getElementById('keyPublicOp-result').innerHTML = localStorage.getItem("keyPublicOp");
-document.getElementById('keyRecover-result').innerHTML = localStorage.getItem("keyRecover");
-document.getElementById('keyRevoke-result').innerHTML = localStorage.getItem("keyRevoke");
-document.getElementById('idaddr-result').innerHTML = localStorage.getItem("idAddr");
-document.getElementById('idaddr-header').innerHTML = localStorage.getItem("idAddr");
-document.getElementById('proofClaimOperationalKey-result').innerHTML = localStorage.getItem("proofKSign");
 
-function loadRelay() {
-  relayUrl = document.getElementById('relayUrl').value;
-  relay = new iden3.Relay(relayUrl);
-  toastr.info('Relay loaded');
+// g is the global state object
+let g = {};
+g.id = null;
+
+function saveG() {
+  localStorage.setItem("g", JSON.stringify(g));
 }
+
+function loadG() {
+  const gSto = JSON.parse(localStorage.getItem("g"));
+  const relay = new iden3.Relay(gSto.id.relay.url, gSto.id.relay.debug);
+  const nameServer = new iden3.NameServer(gSto.id.nameServer.url, gSto.id.nameServer.debug);
+  const notificationServer = new iden3.NotificationServer(gSto.id.notificationServer.url,
+    gSto.id.notificationServer.debug);
+
+  // Make a copy of gSto into g, so that we don't erease gSto.id afterwards
+  g = JSON.parse(JSON.stringify(gSto));
+  g.id = new iden3.Id(gSto.id.keyOperationalPub, gSto.id.keyRecover, gSto.id.keyRevoke, relay,
+    gSto.id.relayAddr, nameServer, notificationServer, '', undefined, 0);
+  g.id.idAddr = gSto.id.idAddr;
+  g.id.tokenLogin = gSto.id.tokenLogin;
+
+  //g.idName = gSto.idName;
+  //g.proofKSign = gSto.proofKSign;
+  //g.proofEthName = gSto.proofEthName;
+  //g.keyAddressOp = gSto.keyAddressOp;
+  //g.keys = gSto.keys;
+  //g.masterSeed = gSto.masterSeed;
+  //g.notifications = gSto.notifications;
+  //g.notificationLastId = gSto.notificationLastId;
+
+  if (gSto.backupServer != null) {
+    const backupServer = new iden3.Backup(gSto.backupServer.url, gSto.backupServer.username,
+      gSto.backupServer.password, gSto.backupServer.debug);
+    g.backupServer = backupServer
+  }
+}
+
+if(localStorage.getItem("g")) {
+  loadG();
+  console.log("id", g.id);
+  printKeys(g.keys);
+
+  document.getElementById('masterSeed-result').innerHTML = g.masterSeed;
+  document.getElementById('keyAddressOp-result').innerHTML = g.keyAddressOp;
+  document.getElementById('keyPublicOp-result').innerHTML = g.id.keyOperationalPub;
+  document.getElementById('keyRecover-result').innerHTML = g.id.keyRecover;
+  document.getElementById('keyRevoke-result').innerHTML = g.id.keyRevoke;
+  document.getElementById('idaddr-result').innerHTML = g.id.idAddr;
+  document.getElementById('idaddr-header').innerHTML = g.id.idAddr;
+  document.getElementById('proofClaimOperationalKey-result').innerHTML = g.proofKSign;
+  document.getElementById('assignName-result').innerHTML = JSON.stringify(g.proofEthName);
+}
+
+let servers = null;
+function loadServers() {
+  servers = {};
+  servers.relayUrl = document.getElementById('relay-url').value;
+  servers.relayAddr = document.getElementById('relay-addr').value;
+  servers.nameServerUrl = document.getElementById('name-server-url').value;
+  servers.nameServerAddr = document.getElementById('name-server-addr').value;
+  servers.notificationServerUrl = document.getElementById('notification-server-url').value;
+
+  toastr.info('Servers loaded');
+}
+
 
 function newWallet() {
-  passphrase = document.getElementById('kc-passphrase').value;
+  if (servers == null) {
+    toastr.error('No servers loaded!');
+    return;
+  }
+  const relay = new iden3.Relay(servers.relayUrl, false);
+  const nameServer = new iden3.NameServer(servers.nameServerUrl, false);
+  const notificationServer = new iden3.NotificationServer(servers.notificationServerUrl, true);
+
+  const passphrase = getPassphrase();;
   console.log('passphrase', passphrase);
   kc.unlock(passphrase);
   // generate master seed
   kc.generateMasterSeed();
-  masterSeed = kc.getMasterSeed();
-  document.getElementById('masterSeed-result').innerHTML = masterSeed;
-  localStorage.setItem("masterSeed", masterSeed);
-  kc.generateKeyBackUp(masterSeed);
+  g.masterSeed = kc.getMasterSeed();
+  document.getElementById('masterSeed-result').innerHTML = g.masterSeed;
+  kc.generateKeyBackUp(g.masterSeed);
   // Generate keys for first identity
-  const keys = kc.createKeys();
+  g.keys = kc.createKeys();
   // key[1] that is a pubic key in its compressed form
-  keyAddressOp = keys[0];
-  keyPublicOp = keys[1];
-  keyRecover = keys[2];
-  keyRevoke = keys[3];
+  g.keyAddressOp = g.keys[0];
+  let keyPublicOp = g.keys[1];
+  let keyRecover = g.keys[2];
+  let keyRevoke = g.keys[3];
 
-  document.getElementById('keyAddressOp-result').innerHTML = keyAddressOp;
+  document.getElementById('keyAddressOp-result').innerHTML = g.keyAddressOp;
   document.getElementById('keyPublicOp-result').innerHTML = keyPublicOp;
   document.getElementById('keyRecover-result').innerHTML = keyRecover;
   document.getElementById('keyRevoke-result').innerHTML = keyRevoke;
 
-  localStorage.setItem("keyAddressOp", keyAddressOp);
-  localStorage.setItem("keyPublicOp", keyPublicOp);
-  localStorage.setItem("keyRecover", keyRecover);
-  localStorage.setItem("keyRevoke", keyRevoke);
-
-
   // create a new id object
-  id = new iden3.Id(keyPublicOp, keyRecover, keyRevoke, relay, relayAddr, nameServer, '', undefined, 0);
-  id.createId()
+  g.id = new iden3.Id(keyPublicOp, keyRecover, keyRevoke, relay, servers.relayAddr, nameServer,
+    notificationServer, '', undefined, 0);
+  g.id.createId()
   .then((createIdRes) => {
     // Successfull create identity api call to relay
     console.log(createIdRes.idAddr); // Identity counterfactoual address
 
-    idAddr = createIdRes.idAddr;
+    const idAddr = createIdRes.idAddr;
     document.getElementById('idaddr-result').innerHTML = idAddr;
     document.getElementById('idaddr-header').innerHTML = idAddr;
-    localStorage.setItem("idAddr", idAddr);
-    localStorage.setItem("id", JSON.stringify(id));
 
-    proofKSign = createIdRes.proofClaim;
-    document.getElementById('proofClaimOperationalKey-result').innerHTML = JSON.stringify(proofKSign);
-    localStorage.setItem("proofKSign", JSON.stringify(proofKSign));
-
-    console.log(proofKSign); // Proof of claim regarding authorization of key public operational
+    g.proofKSign = createIdRes.proofClaim;
+    document.getElementById('proofClaimOperationalKey-result').innerHTML = JSON.stringify(g.proofKSign);
+    console.log(g.proofKSign); // Proof of claim regarding authorization of key public operational
     console.log('Create and authorize new key for address');
+
+    toastr.success('New wallet created');
+    saveG();
   })
-  .catch((error) => {
-    console.error(error.message);
+  .catch((err) => {
+    toastr.error(err);
+    console.error(err.response.data);
   });
 }
 
@@ -116,14 +150,14 @@ function printKeys(keys) {
 }
 
 function newKey() {
-  passphrase = document.getElementById('kc-passphrase').value;
+  const passphrase = getPassphrase();;
   kc.unlock(passphrase);
-  const keyLabel = 'testKey' + keys.length;
+  const keyLabel = 'testKey' + g.keys.length;
   try {
-    const newKey = id.createKey(kc, keyLabel, true);
-    keys.push(newKey);
-    printKeys(keys);
-    localStorage.setItem("keys", JSON.stringify(keys));
+    const newKey = g.id.createKey(kc, keyLabel, true);
+    g.keys.push(newKey);
+    printKeys(g.keys);
+    saveG();
     toastr.success("New key created");
   } catch(err) {
     console.error(err);
@@ -132,31 +166,32 @@ function newKey() {
 }
 
 function assignName() {
-  passphrase = document.getElementById('kc-passphrase').value;
+  const passphrase = getPassphrase();;
   kc.unlock(passphrase);
   // bind the identity address to a label. It send required data to name-resolver service and name-resolver issue a claim 'assignName' binding identity address with label
-  idName = document.getElementById('nameInput').value;
-  proofKSignJson = document.getElementById('proofClaimOperationalKey-result').value;
-  const proofKSignOpPub = JSON.parse(proofKSignJson);
-  console.log(proofKSignOpPub);
-  id.bindId(kc, id.keyOperationalPub, proofKSignOpPub, idName)
+  const idName = document.getElementById('nameInput').value;
+  g.id.bindId(kc, g.id.keyOperationalPub, g.proofKSign, idName)
     .then((bindRes) => {
       console.log(bindRes.data);
-      proofEthName = bindRes.data;
-      document.getElementById('assignName-result').innerHTML = JSON.stringify(proofEthName);
+      g.proofEthName = bindRes.data;
+      document.getElementById('assignName-result').innerHTML = JSON.stringify(g.proofEthName);
       toastr.success("Assign name success");
+      g.idName = idName;
+      saveG();
       // request idenity address to name-resolver ( currently name-resolver service is inside relay) from a given label
-      nameServer.resolveName(`${idName}@iden3.io`)
+      g.id.nameServer.resolveName(`${idName}@iden3.io`) // TODO: Don't use hardcoded domain
         .then((resolveRes) => {
           const idAddress = resolveRes.data.idAddr;
-          console.log(`${idName}@iden3.io associated with addres: ${idAddress}`);
+          console.log(`${idName}@iden3.io associated with addres: ${idAddress}`); // TODO: Don't use hardcoded domain
         })
-        .catch((error) => {
-          console.error(error.message);
+        .catch((err) => {
+          toastr.error(err);
+          console.error(err.response.data);
         });
     })
-    .catch((error) => {
-      console.error(error.message);
+    .catch((err) => {
+      toastr.error(err);
+      console.error(err.response.data);
     });
 }
 
@@ -167,12 +202,11 @@ function login() {
   const date = new Date();
   const unixtime = Math.round((date).getTime() / 1000);
   const expirationTime = unixtime + (3600 * 60);
-  let ksign = keyPublicOp;
-  const signedPacket = iden3.protocols.login.signIdenAssertV01(signatureRequest, id.idAddr, `${idName}@iden3.io`, proofEthName.proofClaimAssignName, kc, ksign, proofKSign, expirationTime);
-  return axios.post(`${signatureRequest.url}/login`,
-      {
-        signedPacket: signedPacket,
-      });
+  let ksign = id.keyOperationalPub;
+  // TODO: Don't use hardcoded domain
+  const signedPacket = iden3.protocols.login.signIdenAssertV01(signatureRequest, g.id.idAddr,
+    `${idName}@iden3.io`, g.proofEthName.proofClaimAssignName, kc, ksign, g.proofKSign, expirationTime);
+  return axios.post(`${signatureRequest.url}/login`, { signedPacket: signedPacket, });
 }
 
 function appReset() {
@@ -180,17 +214,19 @@ function appReset() {
   location.reload();
 }
 
-
 // Notification Tab
 function updateNotificationsPanel(){
-  const notificationsAddr = localStorage.getItem("idAddr");
-  if(notificationsAddr) {
-    document.getElementById('notification-idAddress').innerHTML = "Send notifications to address: " + localStorage.getItem("idAddr");
+  let notificationSendIdAddress = document.getElementById('notification-send-idAddress');
+  if (notificationSendIdAddress.value === '') {
+    notificationSendIdAddress.value = g.id.idAddr;
   }
-  else {
-    document.getElementById('notification-idAddress').innerHTML = "There is no address to send notifications";
+  let notificationSendContent = document.getElementById('notification-send-content');
+  if (notificationSendContent.value === '') {
+    notificationSendContent.value = 'Test notification message';
   }
+  showNotifications();
 }
+
 
 function sendNotifications(){
 
@@ -200,61 +236,63 @@ function sendNotifications(){
 // BACKUP
 //
 function exportBackup() {
-    passphrase = document.getElementById('kc-passphrase').value;
-    kc.unlock(passphrase);
-    const lsEncrypted = db.exportWallet(kc);
-    console.log(lsEncrypted);
-    document.getElementById('exportedBackup').innerHTML = lsEncrypted;
-    toastr.info("Backup exported");
+  const passphrase = getPassphrase();;
+  kc.unlock(passphrase);
+  const lsEncrypted = db.exportWallet(kc);
+  console.log(lsEncrypted);
+  document.getElementById('exportedBackup').innerHTML = lsEncrypted;
+  toastr.info("Backup exported");
 }
 
 function importBackup() {
-    passphrase = document.getElementById('kc-passphrase').value;
-    kc.unlock(passphrase);
-    let seedBackup = document.getElementById('masterSeed-input').value;
-    let toImport = document.getElementById('importBackup').value;
-    const ack = db.importWallet(seedBackup, kc, toImport);
-    if (!ack) {
-      toastr.error('Error importing backup');
-    } else {
-      toastr.success("Backup imported");
-      setTimeout(function(){
-        location.reload();
-      }, 500);
-    }
+  const passphrase = getPassphrase();;
+  kc.unlock(passphrase);
+  let seedBackup = document.getElementById('masterSeed-input').value;
+  let toImport = document.getElementById('importBackup').value;
+  const ack = db.importWallet(seedBackup, kc, toImport);
+  if (!ack) {
+    toastr.error('Error importing backup');
+  } else {
+    toastr.success("Backup imported");
+    setTimeout(function(){
+      location.reload();
+    }, 500);
+  }
+}
+
+function loadBackupServer() {
+  const backupUrl = document.getElementById("backup-server-url").value;
+  const username = document.getElementById("backup-server-username").value;
+  const password = document.getElementById("backup-server-password").value;
+  g.backupServer = new iden3.Backup(backupUrl, username, password, true);
+  saveG();
+  toastr.info('Backup servers loaded');
 }
 
 function registerBackup() {
-  backupUrl = document.getElementById("backupUrl").value;
-  username = document.getElementById("backupUsername").value;
-  password = document.getElementById("backupPassword").value;
-  backupService = new iden3.Backup(backupUrl, username, password, true);
-  backupService.register().then((res) => {
+  g.backupServer.register().then((res) => {
     console.log("res", res);
     console.log("Backup register success");
     toastr.success("Backup register success");
+  }).catch((err) => {
+    toastr.error(err);
+    console.error(err.response.data);
   });
-
 }
 
 function uploadBackup() {
-  passphrase = document.getElementById('kc-passphrase').value;
+  const passphrase = getPassphrase();;
   kc.unlock(passphrase);
   const lsEncrypted = db.exportWallet(kc);
 
-
-  backupUrl = document.getElementById("backupUrl").value;
-  username = document.getElementById("backupUsername").value;
-  password = document.getElementById("backupPassword").value;
-  backupService = new iden3.Backup(backupUrl, username, password, true);
-
-  backupService.upload(lsEncrypted).then((res) => {
+  g.backupServer.upload(lsEncrypted).then((res) => {
     console.log("res", res);
     console.log("Backup upload success");
     toastr.success("Backup upload success");
-
+  }).catch((err) => {
+    toastr.error(err);
+    console.error(err.response.data);
   });
-
 }
 
 function downloadBackup() {
@@ -264,16 +302,11 @@ function downloadBackup() {
     return;
   }
 
-  backupUrl = document.getElementById("backupUrl").value;
-  username = document.getElementById("backupUsername").value;
-  password = document.getElementById("backupPassword").value;
-  backupService = new iden3.Backup(backupUrl, username, password, true);
-
-  backupService.download().then((res) => {
+  g.backupServer.download().then((res) => {
     console.log("res", res);
     console.log("Backup download success");
     toastr.success("Backup download success");
-    passphrase = document.getElementById('kc-passphrase').value;
+    const passphrase = getPassphrase();;
     kc.unlock(passphrase);
     let seedBackup = document.getElementById('masterSeed-input').value;
     let toImport = document.getElementById('importBackup').value;
@@ -287,47 +320,110 @@ function downloadBackup() {
         location.reload();
       }, 500);
     }
+  }).catch((err) => {
+    toastr.error(err);
+    console.error(err.response.data);
   });
-
-// Notification Tab
-function updateNotificationsPanel(){
-  const notificationsAddr = localStorage.getItem("idAddr");
-  if(notificationsAddr) {
-    document.getElementById('notification-idAddress').innerHTML = "Send notifications to address: " + localStorage.getItem("idAddr");
-  }
-  else {
-    document.getElementById('notification-idAddress').innerHTML = "There is no address to send notifications";
-  }
 }
 
-let counter = 0;
+// Helper function to add an entry to a list and scroll the list.
+function appendList(listId, head1, head2, body) {
+  const list = document.getElementById(listId);
 
-function sendNotifications(){
-  const notificationList = document.getElementById('notifications-list').innerHTML;
-  document.getElementById('notifications-list').innerHTML = notificationList + counter.toString() + "\n"; 
-  counter++;
+  let entry = document.createElement('div');
+  entry.className += "list-group-item list-group-item-action flex-column align-items-start p-2 list-group-item-light";
+  let div = document.createElement('div');
+  entry.innerHTML =`
+<div class="d-flex w-100 justify-content-between">
+  <small>${head1}</small>
+  <small>${head2}</small>
+</div>
+<p class="mb-1">${body}</p>`;
+
+  list.appendChild(entry);
+  list.scrollTo(0, list.scrollTopMax);
+
+  return entry;
 }
 
-const loginUrl = 'http://localhost:9000';
-async function loginNotfications(){
-  // Ask notification server for 'signedPacket'
-  const login = await axiosGetDebug(`${loginUrl}/login`);
-  const sigReq = login.data.sigReq;
-  // Sign 'signedPacket'
-  const date = new Date();
-  const unixtime = Math.round((date).getTime() / 1000);
-  const expirationTime = unixtime + 60;
-  const signedPacket = iden3.protocols.login.signIdenAssertV01(sigReq, id.idAddr, `${name}@iden3.io`, proofEthName.proofAssignName, kc, ksign, proofKSign, expirationTime);
-  // Send back to notification server 'signIdenAssert' 
-  const token = await axiosPostDebug(`${loginUrl}/login`, {jws: signedPacket});
-  // Get Token authentication for notification server
-  const tokenString = "expire date: " + (token.data.expire).toString();
-  tokenString += "\n" + "token:" + (token.data.token).toString();
+function sendNotifications() {
+  const notificationSendIdAddress = document.getElementById('notification-send-idAddress').value;
+  const notificationSendContent = document.getElementById('notification-send-content').value;
+
+  const notificationSentList = document.getElementById('notification-sent-list');
+
+  let entry = appendList('notification-sent-list', `To <b>${notificationSendIdAddress}</b>`,
+    new Date().toLocaleTimeString(), notificationSendContent);
+  g.id.notificationServer.postNotification(notificationSendIdAddress, notificationSendContent)
+    .then((res) => {
+      entry.classList.remove('list-group-item-light');
+      entry.classList.add('list-group-item-success');
+    }).catch((err) => {
+      toastr.error(err);
+      entry.classList.remove('list-group-item-light');
+      entry.classList.add('list-group-item-danger');
+      console.error(err.response.status, err.response.statusText);
+    });
+}
+
+function loginNotifications() {
+  const passphrase = getPassphrase();;
+  kc.unlock(passphrase);
+
+  const elemToken = document.getElementById('notification-auth-token');
+  elemToken.value = '...';
+  g.id.loginNotificationServer(g.proofEthName, kc, g.id.keyOperationalPub, g.proofKSign)
+  .then((res) => {
+    elemToken.value = res.data.token;
+    toastr.success("Successfull login");
+    saveG();
+  })
+  .catch((err) => {
+    toastr.error(err);
+    elemToken.value = `Error: ${err.response.data}`;
+    console.error(err.response.status, err.response.data);
+  });
+}
+
+function showNotifications() {
+  if (g.notifications == null) {
+    return;
+  }
+  const list = document.getElementById('notification-recv-list');
+  list.innerHTML = ''
+  // WTF, js doesn't sort numbers using number comparison!
+  const ids = Object.keys(g.notifications).map(s => Number(s)).sort((a, b) => a - b);
+  ids.forEach((id) => {
+    appendList('notification-recv-list', id, '-', g.notifications[id]);
+  });
 }
 
 // Ask to notification server for last 10 notifications
-function getNotifications(){
-
+function getNotifications() {
+  if (g.notifications == null) {
+    g.notifications = {};
+    g.notificationLastId = 0;
+  }
+  g.id.getNotifications(0, g.notificationLastId)
+    .then((res) => {
+      const notifications = res.data.notifications;
+      if (notifications == null) {
+        toastr.info("No new notifications");
+        return
+      }
+      notifications.forEach((notif) => {
+        g.notifications[notif.id] = notif.data;
+        if (notif.id > g.notificationLastId) {
+          g.notificationLastId = notif.id;
+        }
+      });
+      showNotifications();
+      saveG();
+    })
+    .catch((err) => {
+      toastr.error(err);
+      console.error(err.response.data);
+    });
 }
 
 // Delete last 10 notifications
@@ -336,4 +432,3 @@ function deleteNotifications(){
 }
 
 // const hello = await axiosGetDebug(`${loginUrl}/auth/hello`, { headers: { Authorization: `Bearer ${token.data.token}` } });
-    

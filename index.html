@@ -49,15 +49,45 @@
             <div class="tab-pane fade show active" id="nav-wallet" role="tabpanel" aria-labelledby="nav-wallet-tab">
               <h5 class="card-title">Wallet</h5>
               <hr>
-              <div class="row">
-                <div class="col-sm-4">
-                  Relay URL:
+
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Relay URL:</span>
                 </div>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="relayUrl" value="http://127.0.0.1:8000/api/unstable" placeholder="relay url">
-                </div>
+                <input type="text" class="form-control" id="relay-url" value="http://127.0.0.1:8000/api/unstable">
               </div>
-              <a onclick="loadRelay()" class="btn btn-primary o_primary float-right">Load Relay</a>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Relay Addr:</span>
+                </div>
+                <input type="text" class="form-control" id="relay-addr" value="0xe0fbce58cfaa72812103f003adce3f284fe5fc7c">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Name S. URL:</span>
+                </div>
+                <input type="text" class="form-control" id="name-server-url" value="http://127.0.0.1:7000/api/unstable">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Name S. Addr:</span>
+                </div>
+                <input type="text" class="form-control" id="name-server-addr" value="0xe0fbce58cfaa72812103f003adce3f284fe5fc7c">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Notif. S. URL:</span>
+                </div>
+                <input type="text" class="form-control" id="notification-server-url" value="http://127.0.0.1:10000/api/unstable">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Backup S. URL:</span>
+                </div>
+                <input type="text" class="form-control" id="backup-server-url" value="http://127.0.0.1:5000/api/unstable">
+              </div>
+
+              <a onclick="loadServers()" class="btn btn-primary o_primary float-right mb-4">Load Servers</a>
 
               <input id="kc-passphrase" type="password" class="form-control" placeholder="keyContainer encryption passphrase">
               <a onclick="newWallet()" class="btn btn-primary o_primary float-right">New Wallet</a>
@@ -122,24 +152,33 @@
               <h4>Backup Server</h4>
               <hr>
 
-              <div class="row">
-                <div class="col-sm-5">
-                  Backup Server URL:
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Backup S. URL:</span>
                 </div>
-                <div class="col-sm-7">
-                  <input type="text" class="form-control" id="backupUrl" value="http://127.0.0.1:5000/api/unstable" placeholder="backup server url">
+                <input type="text" class="form-control" id="backup-server-url" value="http://127.0.0.1:5000/api/unstable">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Username:</span>
                 </div>
+                <input type="text" class="form-control" id="backup-server-username">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 9rem;">Password:</span>
+                </div>
+                <input type="password" class="form-control" id="backup-server-password">
               </div>
 
-              <div class="row">
+              <div class="row mb-4">
                 <div class="col-sm-6">
-                  <input type="text" class="form-control" id="backupUsername" placeholder="username">
+                  <a onclick="loadBackupServer()" class="btn btn-block btn-primary o_primary">Load Backup Server</a>
                 </div>
                 <div class="col-sm-6">
-                  <input type="password" class="form-control" id="backupPassword" placeholder="password">
+                  <a onclick="registerBackup()" class="btn btn-block btn-primary o_primary">Register</a>
                 </div>
               </div>
-              <a onclick="registerBackup()" class="btn btn-block btn-primary o_secundary" style="margin-top:10px;">Register</a>
               <br>
               <div class="row">
                 <div class="col-sm-6">
@@ -157,24 +196,62 @@
             <div class="tab-pane fade" id="nav-notifications" role="tabpanel" aria-labelledby="nav-notifications-tab">
               <h4>Notifications</h4>
               <hr>
-              <p id="notification-idAddress" style="text-align: center"></p>
-              <a onclick="sendNotifications()" style="margin-left: 37.5%; width:25%;" class="btn btn-primary o_primary">Send Notifications</a>
-              <br><br>
-              <p style="text-align: center">Notifications available</p>
-              <textarea id="notifications-list" rows="3" cols="80" class="textarea-blue" placeholder="List of notifications" readonly="readonly"></textarea>
-              <br><br>
-              <a onclick="loginNotifications()" style="margin-left: 37.5%; width:25%;" class="btn btn-primary o_primary">Login to<br>notification server</a>
-              <br><br>
-              <div class="row">
-                <span class="col-sm-2" style="text-align: center">Token:</span>
-                <textarea id="token-result" rows="1" class="textarea-blue col-sm-10" onclick="selectAndCopy(this)" placeholder="token" readonly="readonly"></textarea>
+
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">To:</span>
+                </div>
+                  <input type="text" class="form-control" id="notification-send-idAddress" placeholder="id address">
               </div>
+
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Content:</span>
+                </div>
+                <textarea class="form-control" id="notification-send-content" placeholder="notification msg"></textarea>
+              </div>
+
+              <a onclick="sendNotifications()" class="btn btn-primary o_primary float-right">Send Notifications</a>
               <br><br>
-              <a onclick="getNotifications()" style="width:40%;" class="btn btn-primary o_primary float-left">Get Notifications</a>
-              <a onclick="deleteNotifications()" style="width:40%;" class="btn btn-primary o_primary float-right">Delete Notifications</a>
-              <br><br>
-              <textarea id="get-value" rows="2" style="width:40%;" class="textarea-blue float-left" placeholder="Get notifications" readonly="readonly"></textarea>
-              <textarea id="delete-value" rows="2" style="width:40%;" class="textarea-blue float-right" placeholder="Delete notifications" readonly="readonly"></textarea>
+              <!--<textarea id="notification-sent-list" rows="3" cols="80" class="textarea-blue" placeholder="List of sent notifications" readonly="readonly"></textarea>-->
+              <h5>Sent notifications log</h5>
+              <div class="card mb-4">
+                <div class="card-body p-3">
+                  <nav>
+                    <div class="list-group list-group-flush p-1" id="notification-sent-list" style="overflow-y:scroll; height:10rem;">
+                    </div>
+                  </nav>
+                </div>
+              </div>
+
+              <a onclick="loginNotifications()" class="btn btn-primary o_primary float-right mb-2">Login</a>
+
+              <div class="input-group mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Token:</span>
+                </div>
+                <input id="notification-auth-token" class="textarea-blue form-control" readonly placeholder="token">
+              </div>
+
+              <div class="text-right mb-2">
+                <a onclick="getNotifications()" class="btn btn-primary o_primary">Get Notifications</a>
+              </div>
+
+              <div class="card mb-4">
+                <div class="card-body p-3">
+                  <nav>
+                    <div class="list-group list-group-flush p-1" id="notification-recv-list" style="overflow-y:scroll; height:10rem;">
+                    </div>
+                  </nav>
+                </div>
+              </div>
+
+              <!--
+              <div class="mb-4">
+                <a onclick="deleteNotifications()" style="width:40%;" class="btn btn-primary o_primary float-right">Delete Notifications</a>
+                <textarea id="notifications-delete" style="width:40%;" class="textarea-blue" placeholder="Delete notifications" readonly="readonly"></textarea>
+              </div>
+              -->
 
             </div>
             <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
@@ -191,12 +268,12 @@
           <h4>Assign name</h4>
           <hr>
           <input id="nameInput" class="form-control" type="text" placeholder="name" value="johndoe" style="width:150px; display:inline;"> @iden3.eth
-          <br>
 
           <a onclick="assignName()" class="btn btn-primary o_primary float-right">Assign Name</a>
           <br><br>
 
           <textarea id="assignName-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAssignName" readonly="readonly"></textarea>
+          <br>
           <h5 class="card-title">Login</h5>
           <hr>
           <p class="card-text">Paste here the QR data to perform a login</p>
@@ -204,7 +281,6 @@
           <a onclick="login()" style="width:28%;" class="btn btn-primary o_primary float-right">Login</a>
           <br><br>
           <textarea id="login-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="login data packet" readonly="readonly"></textarea>
-          <br>
           <br>
           <h5 class="card-title">Sign data</h5>
           <hr>
