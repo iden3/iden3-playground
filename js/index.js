@@ -419,9 +419,11 @@ function showNotifications() {
 }
 
 function getNotificationsToaster() {
-  if (!getNotifications) {
-    toastr.info("No new notifications");
-  }
+  getNotifications().then((newNoti) => {
+    if (!newNoti) {
+      toastr.info("No new notifications");
+    }
+  });
 }
 
 // Ask to notification server for last 10 notifications
@@ -449,6 +451,10 @@ function getNotifications() {
     .catch((err) => {
       toastr.error(err);
       console.error(err.response.data);
+      let check = document.getElementById('notification-background');
+      check.onclick = undefined;
+      check.checked = false;
+      check.onclick = toggleNotificationsBackground;
     });
 }
 
@@ -475,8 +481,8 @@ function toggleNotificationsBackground() {
     }
     console.log("Starting notifications background worker...");
     notifBackgroundWorkerId = setInterval(() => {
-      getNotifications().then((ok) => {
-        if (ok) {
+      getNotifications().then((newNoti) => {
+        if (newNoti) {
           toastr.info("New notifications!");
         }
       });
