@@ -8,6 +8,11 @@
 //const notificationUrl = 'http://127.0.0.1:10000/api/unstable';
 //const notificationServer = new iden3.NotificationServer(notificationUrl);
 
+// Notification server
+const notificationUrl = 'http://127.0.0.1:10000/api/unstable';
+const notificationServer = new iden3.NotificationServer(notificationUrl);
+
+
 // new database
 const db = new iden3.Db();
 // new key container using localStorage
@@ -499,6 +504,7 @@ function toggleNotificationsBackground() {
 function deleteNotifications(){
 
 }
+<<<<<<< bf306719f6107b0c53d932ad3a9649b94820749f
 
 // Verify Proof of Claim Full
 function verifyProofClaimFull() {
@@ -521,3 +527,36 @@ function verifyProofClaimFull() {
   }
   document.getElementById("proofClaimVerification-result").innerHTML = html;
 }
+=======
+<<<<<<< 5294db02cd101cd7ae0a175dbfb43435945bdfd5
+=======
+
+// const hello = await axiosGetDebug(`${loginUrl}/auth/hello`, { headers: { Authorization: `Bearer ${token.data.token}` } });
+// Background worker code
+// let notificationWorker = undefined;
+// function startWorker() {
+//   notificationWorker = new Worker('js/workerBackground.js');
+//   console.log('worker created');
+//   document.getElementById("but_2").disabled = false;
+//   notificationWorker.onmessage = function (oEvent) {
+//     if ( oEvent.data != null ) {
+//       toastr.info('You have notifications');
+//     }
+//   };
+//   notificationWorker.test();
+// }
+
+// if (id != {}) {
+//   notificationWorker.postMessage(JSON.stringify(id));
+// } else {
+//   console.log('There is no identity loaded');
+// }
+
+// console.log(id);
+// kc.unlock('');
+// const proofEthNameTest = JSON.parse(document.getElementById('assignName-result').innerHTML);
+// const proofKeyTest = JSON.parse(document.getElementById('proofClaimOperationalKey-result').innerHTML);
+// const login = await id.loginNotificationServer(proofEthName, kc, id.keyOperationalPub, proofKSign);
+// console.log(id.notificationServer);
+>>>>>>> Add steps full flow. Finish first step
+>>>>>>> Add steps full flow. Finish first step

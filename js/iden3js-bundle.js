@@ -33707,7 +33707,11 @@ module.exports = function (it) {
 };
 
 },{"./_is-object":136}],126:[function(require,module,exports){
+<<<<<<< 4865a78988a8e62f8322fab995baae12a255e41a
 var core = module.exports = { version: '2.6.3' };
+=======
+var core = module.exports = { version: '2.6.4' };
+>>>>>>> Add steps full flow. Finish first step
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 },{}],127:[function(require,module,exports){
@@ -57697,10 +57701,15 @@ function fn5 (a, b, c, d, e, m, k, s) {
 module.exports = RIPEMD160
 
 },{"buffer":119,"hash-base":189,"inherits":205}],278:[function(require,module,exports){
+<<<<<<< 4865a78988a8e62f8322fab995baae12a255e41a
 (function (Buffer){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BN = require("bn.js");
+=======
+const assert = require('assert')
+const Buffer = require('safe-buffer').Buffer
+>>>>>>> Add steps full flow. Finish first step
 /**
  * RLP Encoding based on: https://github.com/ethereum/wiki/wiki/%5BEnglish%5D-RLP
  * This function takes in a data, convert it to buffer if not, and a length for recursion
@@ -57935,8 +57944,12 @@ function toBuffer(v) {
     return v;
 }
 
+<<<<<<< 4865a78988a8e62f8322fab995baae12a255e41a
 }).call(this,require("buffer").Buffer)
 },{"bn.js":83,"buffer":119}],279:[function(require,module,exports){
+=======
+},{"assert":36,"safe-buffer":279}],279:[function(require,module,exports){
+>>>>>>> Add steps full flow. Finish first step
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
