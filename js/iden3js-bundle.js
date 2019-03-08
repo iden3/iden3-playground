@@ -1246,7 +1246,6 @@ var axios = require('axios');
 /**
                                * Class representing the notification server
                                * It contains all the relay API calls
-                               * @param {String} url
                                */var
 NotificationServer = function () {
 
@@ -1256,8 +1255,9 @@ NotificationServer = function () {
 
 
   /**
-                                   * Initialization name server object
+                                   * Initialization notification server object
                                    * @param {String} url - NameServer Url identifier
+                                   * @param {Boolean} debug - Default to false. Prints Http response into the console if true
                                    */
   function NotificationServer(url) {var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;(0, _classCallCheck3.default)(this, NotificationServer);
     this.url = url;
@@ -1284,9 +1284,9 @@ NotificationServer = function () {
     }
 
     /**
-       * Request login into notification server
+       * Submit login into notification server
        * Login would be done according identity assert protocol
-       * Server response would be signature request package
+       * Server response would be a jws token
        * @param {String} signedPacket - Identity assertion packet represented into an encoded base64 string
        * @return {Object} Http response
        */ }, { key: 'submitLogin', value: function submitLogin(
@@ -1297,6 +1297,7 @@ NotificationServer = function () {
     /**
        * Set notification on server for an spcefic identity
        * @param {String} idAddr - Identity address
+       * @param {String} notification - Notification to be stored
        * @return {Object} Http response
        */ }, { key: 'postNotification', value: function postNotification(
     idAddr, notification) {
@@ -1306,26 +1307,28 @@ NotificationServer = function () {
     /**
        * Gets last 10 notifications available for an specific address
        * Request can be done with following parameters:
-       * before identifier ['beforeId']: returns previous 10 notifications from the notificatio identifier
-       * after identifier ['afterId']: returns next 10 notifications from the notificatio identifier
+       * before identifier ['beforeId']: returns previous 10 notifications from the notification identifier
+       * after identifier ['afterId']: returns next 10 notifications from the notification identifier
        * @param {String} token - Session token to be identified
+       * @param {Number} beforeId - Retrieve notifications less than this identifier
+       * @param {Number} afterId - Retrieve notifications greater than this identifier
        * @return {Object} Http response
        */ }, { key: 'getNotifications', value: function getNotifications(
     token) {var beforeId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;var afterId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-      // Take url parameters
+      // Handle http parameters
       var urlParams = '';
       if (beforeId !== 0) {
-        urlParams = '?beforeid =' + beforeId.toString();
+        urlParams = '?beforeid=' + beforeId.toString();
       } else if (afterId !== 0) {
-        urlParams = '?afterid =' + afterId.toString();
+        urlParams = '?afterid=' + afterId.toString();
       }
 
       return this.getFn(this.url + '/auth/notifications' + urlParams, { headers: { Authorization: 'Bearer ' + token } });
     }
 
     /**
-       * Delete all notification associted with an specific identity address
-       * Request has prove to be the owner of the identity adress
+       * Delete all notification associated with an specific identity address
+       * Requester has to prove to be the owner of the identity adress
        * @param {String} token - Session token to be identified
        * @return {Object} Http response
        */ }, { key: 'deleteNotifications', value: function deleteNotifications(
@@ -1534,20 +1537,30 @@ Backup = function () {
 
 module.exports = Backup;
 },{"./http-debug":13,"axios":40,"babel-runtime/helpers/classCallCheck":66,"babel-runtime/helpers/createClass":67}],17:[function(require,module,exports){
-'use strict';var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var axios = require('axios');
+'use strict';var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _httpDebug = require('./http-debug');function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+
+var axios = require('axios');
 
 /**
-                                                                                                                                                                                                                                                                                                                                                                                                           * Class representing a the Relay
-                                                                                                                                                                                                                                                                                                                                                                                                           * It contains all the relay API calls
-                                                                                                                                                                                                                                                                                                                                                                                                           * @param {String} url
-                                                                                                                                                                                                                                                                                                                                                                                                           */var
+                               * Class representing a the Relay
+                               * It contains all the relay API calls
+                               * @param {String} url
+                               */var
 Relay = function () {
   /**
                       * Initialization relay object
                       * @param {String} url - Relay Url identifier
                       */
-  function Relay(url) {(0, _classCallCheck3.default)(this, Relay);
+  function Relay(url) {var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;(0, _classCallCheck3.default)(this, Relay);
     this.url = url;
+    this.debug = debug;
+    if (this.debug) {
+      this.getFn = _httpDebug.axiosGetDebug;
+      this.postFn = _httpDebug.axiosPostDebug;
+    } else {
+      this.getFn = axios.get;
+      this.postFn = axios.post;
+    }
   }
 
   /**
@@ -1555,7 +1568,7 @@ Relay = function () {
      * @returns {Object} - Http response
      */(0, _createClass3.default)(Relay, [{ key: 'getRelayRoot', value: function getRelayRoot()
     {
-      return axios.get(this.url + '/root');
+      return this.getFn(this.url + '/root');
     }
 
     /**
@@ -1564,7 +1577,7 @@ Relay = function () {
        * @returns {Object} - Http response
        */ }, { key: 'getIdRoot', value: function getIdRoot(
     idAddr) {
-      return axios.get(this.url + '/ids/' + idAddr + '/root');
+      return this.getFn(this.url + '/ids/' + idAddr + '/root');
     }
 
     /**
@@ -1574,7 +1587,7 @@ Relay = function () {
        * @returns {Object} - Http response
        */ }, { key: 'postClaim', value: function postClaim(
     idAddr, bytesSignedMsg) {
-      return axios.post(this.url + '/ids/' + idAddr + '/claims', bytesSignedMsg);
+      return this.postFn(this.url + '/ids/' + idAddr + '/claims', bytesSignedMsg);
     }
 
     /**
@@ -1584,8 +1597,8 @@ Relay = function () {
        * @returns {Object} - Http response
        */ }, { key: 'getClaimByHi', value: function getClaimByHi(
     idAddr, hi) {
-      // return axios.get(`${this.url}/claim_proof/${idAddr}/hi/${hi}`);
-      return axios.get(this.url + '/ids/' + idAddr + '/claims/' + hi + '/proof');
+      // return this.getFn(`${this.url}/claim_proof/${idAddr}/hi/${hi}`);
+      return this.getFn(this.url + '/ids/' + idAddr + '/claims/' + hi + '/proof');
     }
 
     /**
@@ -1602,7 +1615,7 @@ Relay = function () {
         revokator: rev };
 
 
-      return axios.post(this.url + '/ids', keys);
+      return this.postFn(this.url + '/ids', keys);
     }
 
     /**
@@ -1612,7 +1625,7 @@ Relay = function () {
        * @returns {Object} Http response
        */ }, { key: 'getId', value: function getId(
     idAddr) {
-      return axios.get(this.url + '/ids/' + idAddr);
+      return this.getFn(this.url + '/ids/' + idAddr);
     }
 
     /**
@@ -1620,12 +1633,12 @@ Relay = function () {
        * @param  {String} idAddr - Identity address
        */ }, { key: 'deployId', value: function deployId(
     idAddr) {
-      return axios.post(this.url + '/ids/' + idAddr + '/deploy');
+      return this.postFn(this.url + '/ids/' + idAddr + '/deploy');
     } }]);return Relay;}();
 
 
 module.exports = Relay;
-},{"axios":40,"babel-runtime/helpers/classCallCheck":66,"babel-runtime/helpers/createClass":67}],18:[function(require,module,exports){
+},{"./http-debug":13,"axios":40,"babel-runtime/helpers/classCallCheck":66,"babel-runtime/helpers/createClass":67}],18:[function(require,module,exports){
 'use strict';var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);var _createClass2 = require('babel-runtime/helpers/createClass');var _createClass3 = _interopRequireDefault(_createClass2);var _authorizeKsignSecp256k = require('../claim/authorize-ksign-secp256k1/authorize-ksign-secp256k1');function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 var DataBase = require('../db/db');
@@ -1773,13 +1786,12 @@ Id = function () {
 
     /**
        * Login procedure to get token in order to interact with system notification service
-       * @param {String} Name - associated with that identity
        * @param {Object} proofEthName - proof verifying a label bind it to an address
        * @param {Object} kc - key container
        * @param {String} kSign - key used to sign
-       * @param {Object} proofKSign -  proof verifying a key belongs to a specific identity
+       * @param {Object} proofKSign - proof verifying a key belongs to a specific identity
        */ }, { key: 'loginNotificationServer', value: function loginNotificationServer(
-    name, proofEthName, kc, kSign, proofKSign) {var _this2 = this;
+    proofEthName, kc, kSign, proofKSign) {
       var self = this;
       return this.notificationServer.requestLogin().
       then(function (resReqLogin) {var
@@ -1788,9 +1800,10 @@ Id = function () {
         var date = new Date();
         var unixtime = Math.round(date.getTime() / 1000);
         var expirationTime = unixtime + 60;
-        var signedPacket = protocols.login.signIdenAssertV01(sigReq, _this2.idAddr, name, proofEthName.proofAssignName, kc, kSign, proofKSign, expirationTime);
+        var signedPacket = protocols.login.signIdenAssertV01(sigReq, self.idAddr,
+        proofEthName.ethName, proofEthName.proofAssignName, kc, kSign, proofKSign, expirationTime);
         // Send back to notification server 'signIdenAssert'
-        return _this2.notificationServer.submitLogin(signedPacket).
+        return self.notificationServer.submitLogin(signedPacket).
         then(function (resSubLogin) {
           self.tokenLogin = resSubLogin.data.token;
           return resSubLogin;
@@ -1800,21 +1813,27 @@ Id = function () {
 
     /**
        * Post notifications associated with this identity
+       * @param {String} idAddrDest - Notification will be stored for this identity address
+       * @param {String} notification - Notification to store
+       * @return {Object} - Http response
        */ }, { key: 'postNotifications', value: function postNotifications(
     idAddrDest, notification) {
       return this.notificationServer.postNotifications(idAddrDest, notification);
     }
 
     /**
-       * Get notifications associated with this identity
+       * Get 10 notifications associated with this identity
+       * @param {Number} beforeId - Specify get 10 notifications before this identifier
+       * @param {Number} afterId - Specify get 10 notifications after this identifier
+       * @return {Object} - Http response
        */ }, { key: 'getNotifications', value: function getNotifications()
     {var beforeId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;var afterId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      console.log("Token: ", this.tokenLogin);
       return this.notificationServer.getNotifications(this.tokenLogin, beforeId, afterId);
     }
 
     /**
-       * Delete notification associated with this idenity
+       * Delete all notifications associated with this idenity
+       * @return {Object} - Http response
        */ }, { key: 'deleteNotifications', value: function deleteNotifications()
     {
       return this.notificationServer.deleteNotifications(this.tokenLogin);
@@ -2084,7 +2103,7 @@ LocalStorageContainer = function () {
     /**
        * Generates master mnemonic
        * @param {String} - Mnemonic to store
-       * @returns {Bool} - True if databe has been written correctly, False otherwise
+       * @returns {Bool} - True if database has been written correctly, False otherwise
        */ }, { key: 'generateMasterSeed', value: function generateMasterSeed()
     {var mnemonic = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : bip39.generateMnemonic();
       if (this.isUnlock() && bip39.validateMnemonic(mnemonic)) {
