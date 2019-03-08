@@ -71,6 +71,29 @@ if(localStorage.getItem("g")) {
   document.getElementById('assignName-result').innerHTML = JSON.stringify(g.proofEthName);
 }
 
+function setServersUrl() {
+  let relayUrl = document.getElementById('relay-url');
+  let nameServerUrl = document.getElementById('name-server-url');
+  let notificationServerUrl = document.getElementById('notification-server-url');
+  let backupServerUrl = document.getElementById("backup-server-url");
+
+  let hostname = window.location.hostname;
+  if (relayUrl.value === "") {
+    relayUrl.value = `http://${hostname}:8000/api/unstable`;
+  }
+  if (nameServerUrl.value === "") {
+    nameServerUrl.value = `http://${hostname}:7000/api/unstable`;
+  }
+  if (notificationServerUrl.value === "") {
+    notificationServerUrl.value = `http://${hostname}:10000/api/unstable`;
+  }
+  if (backupServerUrl.value === "") {
+    backupServerUrl.value = `http://${hostname}:5000/api/unstable`;
+  }
+}
+
+setServersUrl();
+
 let servers = null;
 function loadServers() {
   servers = {};
@@ -91,7 +114,7 @@ function newWallet() {
   }
   const relay = new iden3.Relay(servers.relayUrl, false);
   const nameServer = new iden3.NameServer(servers.nameServerUrl, false);
-  const notificationServer = new iden3.NotificationServer(servers.notificationServerUrl, true);
+  const notificationServer = new iden3.NotificationServer(servers.notificationServerUrl, false);
 
   const passphrase = getPassphrase();;
   console.log('passphrase', passphrase);
@@ -214,24 +237,6 @@ function appReset() {
   location.reload();
 }
 
-// Notification Tab
-function updateNotificationsPanel(){
-  let notificationSendIdAddress = document.getElementById('notification-send-idAddress');
-  if (notificationSendIdAddress.value === '') {
-    notificationSendIdAddress.value = g.id.idAddr;
-  }
-  let notificationSendContent = document.getElementById('notification-send-content');
-  if (notificationSendContent.value === '') {
-    notificationSendContent.value = 'Test notification message';
-  }
-  showNotifications();
-}
-
-
-function sendNotifications(){
-
-}
-
 //
 // BACKUP
 //
@@ -346,6 +351,21 @@ function appendList(listId, head1, head2, body) {
   return entry;
 }
 
+// Notification Tab
+function updateNotificationsPanel(){
+  let notificationSendIdAddress = document.getElementById('notification-send-idAddress');
+  if (notificationSendIdAddress.value === '') {
+    if (g.id != null) {
+      notificationSendIdAddress.value = g.id.idAddr;
+    }
+  }
+  let notificationSendContent = document.getElementById('notification-send-content');
+  if (notificationSendContent.value === '') {
+    notificationSendContent.value = 'Test notification message';
+  }
+  showNotifications();
+}
+
 function sendNotifications() {
   const notificationSendIdAddress = document.getElementById('notification-send-idAddress').value;
   const notificationSendContent = document.getElementById('notification-send-content').value;
@@ -398,18 +418,23 @@ function showNotifications() {
   });
 }
 
+function getNotificationsToaster() {
+  if (!getNotifications) {
+    toastr.info("No new notifications");
+  }
+}
+
 // Ask to notification server for last 10 notifications
 function getNotifications() {
   if (g.notifications == null) {
     g.notifications = {};
     g.notificationLastId = 0;
   }
-  g.id.getNotifications(0, g.notificationLastId)
+  return g.id.getNotifications(0, g.notificationLastId)
     .then((res) => {
       const notifications = res.data.notifications;
       if (notifications == null) {
-        toastr.info("No new notifications");
-        return
+        return false;
       }
       notifications.forEach((notif) => {
         g.notifications[notif.id] = notif.data;
@@ -419,6 +444,7 @@ function getNotifications() {
       });
       showNotifications();
       saveG();
+      return true;
     })
     .catch((err) => {
       toastr.error(err);
@@ -426,9 +452,44 @@ function getNotifications() {
     });
 }
 
+let notifBackgroundWorkerId = null;
+// Disable the check when we load the playground to avoid unwanted automatic
+// background connections.
+document.getElementById('notification-background').checked = false;
+
+function toggleNotificationsBackground() {
+  let check = document.getElementById('notification-background');
+  if (check.checked) {
+    let interval = Number(document.getElementById('notification-check-seconds').value);
+    if (isNaN(interval)) {
+      toastr.error("Invalid interval");
+      let check = document.getElementById('notification-background');
+      check.onclick = undefined;
+      check.checked = false;
+      check.onclick = toggleNotificationsBackground;
+      return;
+    }
+    interval *= 1000;
+    if (interval < 5000) {
+      interval = 5000;
+    }
+    console.log("Starting notifications background worker...");
+    notifBackgroundWorkerId = setInterval(() => {
+      getNotifications().then((ok) => {
+        if (ok) {
+          toastr.info("New notifications!");
+        }
+      });
+    }, interval);
+  } else {
+    if (notifBackgroundWorkerId != null) {
+      clearInterval(notifBackgroundWorkerId);
+      console.log("Stopping notifications background worker...");
+    }
+  }
+}
+
 // Delete last 10 notifications
 function deleteNotifications(){
 
 }
-
-// const hello = await axiosGetDebug(`${loginUrl}/auth/hello`, { headers: { Authorization: `Bearer ${token.data.token}` } });
