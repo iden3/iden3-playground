@@ -128,7 +128,15 @@
               <hr>
               <div onclick="newKey()" class="btn o_primary float-right">New Key</div>
               <div id="keysBox"></div>
+              <br>
 
+              <h5 class="card-title">Proof of claim verification</h5>
+              <hr>
+              <p>Verify proof of claim, including the 4merkle proofs and the relay signature</p>
+              <input id="relayaddr-input" type="text" placeholder="idaddr of the relay">
+              <textarea id="proofClaimFull-input" rows="3" cols="80" class="textarea-blue" placeholder="Proof of claim to verify"></textarea>
+              <div onclick="verifyProofClaimFull()" class="btn o_primary float-right">Verify Proof of Claim</div>
+              <div id="proofClaimVerification-result" style="margin-top:50px;"></div>
             </div>
             <div class="tab-pane fade" id="nav-backup" role="tabpanel" aria-labelledby="nav-backup-tab">
               <h4>Backup</h4>

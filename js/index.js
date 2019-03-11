@@ -67,7 +67,7 @@ if(localStorage.getItem("g")) {
   document.getElementById('keyRevoke-result').innerHTML = g.id.keyRevoke;
   document.getElementById('idaddr-result').innerHTML = g.id.idAddr;
   document.getElementById('idaddr-header').innerHTML = g.id.idAddr;
-  document.getElementById('proofClaimOperationalKey-result').innerHTML = g.proofKSign;
+  document.getElementById('proofClaimOperationalKey-result').innerHTML = JSON.stringify(g.proofKSign);
   document.getElementById('assignName-result').innerHTML = JSON.stringify(g.proofEthName);
 }
 
@@ -498,4 +498,26 @@ function toggleNotificationsBackground() {
 // Delete last 10 notifications
 function deleteNotifications(){
 
+}
+
+// Verify Proof of Claim Full
+function verifyProofClaimFull() {
+  let relayAddr_proof = document.getElementById('relayaddr-input').value;
+  let proofObj = JSON.parse(document.getElementById('proofClaimFull-input').value);
+  console.log(proofObj);
+  const verified = iden3.protocols.verifyProofClaimFull(proofObj, relayAddr_proof);
+  console.log(verified);
+  let html = "";
+  if (verified) {
+    toastr.success("Proof of claim verified correctly");
+    html += `<div class="o_green" style="padding: 10px;">
+      ✔ Proof of claim verified correctly
+    </div>`;
+  } else {
+    toastr.error("Proof of claim NOT verified");
+    html += `<div class="o_red" style="padding: 10px;">
+      ❌ Proof of claim NOT verified
+    </div>`;
+  }
+  document.getElementById("proofClaimVerification-result").innerHTML = html;
 }
