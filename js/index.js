@@ -433,12 +433,15 @@ function getNotificationsToaster() {
 
 // Ask to notification server for last 10 notifications
 function getNotifications() {
+  console.log(1);
   if (g.notifications == null) {
     g.notifications = {};
     g.notificationLastId = 0;
   }
+  console.log(2);
   return g.id.getNotifications(0, g.notificationLastId)
     .then((res) => {
+      console.log(3);
       const notifications = res.data.notifications;
       if (notifications == null) {
         return false;
@@ -454,6 +457,7 @@ function getNotifications() {
       return true;
     })
     .catch((err) => {
+      console.log(4);
       toastr.error(err);
       console.error(err.response.data);
       let check = document.getElementById('notification-background');
@@ -504,6 +508,7 @@ function toggleNotificationsBackground() {
 function deleteNotifications(){
 
 }
+<<<<<<< a2f0e7f35ee1a7a9c7e6f962b6663e158293f18a
 <<<<<<< bf306719f6107b0c53d932ad3a9649b94820749f
 
 // Verify Proof of Claim Full
@@ -560,3 +565,5 @@ function verifyProofClaimFull() {
 // console.log(id.notificationServer);
 >>>>>>> Add steps full flow. Finish first step
 >>>>>>> Add steps full flow. Finish first step
+=======
+>>>>>>> update variables
