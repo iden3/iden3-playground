@@ -79,6 +79,18 @@ textarea, input {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00eaf7', endColorstr='#a6ff32',GradientType=1 ); /* IE6-9 */
 }
 
+
+.o_green {
+	border: 1px solid #33cc33;
+	color: #33cc33;
+	background: none!important;
+}
+.o_red {
+	border: 1px solid #cc0000;
+	color: #cc0000;
+	background: none!important;
+}
+
 .textarea-blue {
   max-width: 100%;
   color: #00bcd4;
