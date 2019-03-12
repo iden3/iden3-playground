@@ -24,3 +24,6 @@
   color: #d9d9d9;
   background: #2e3438;
 }
+.dark-theme .opaque {
+  background: #171a1c!important;
+}
