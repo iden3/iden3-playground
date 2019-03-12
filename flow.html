@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="icon" type="image/png" href="img/3.png">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <!-- toastr -->
+  <link href="node_modules/toastr/build/toastr.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/utils.css">
+  <link rel="stylesheet" href="css/dark-theme.css">
+
+  <title>iden3-playground</title>
+</head>
+
+<body>
+  <br>
+  <div class="float-right">
+    <div class="onoffswitch" style="display:inline-block;margin: 10px;" title="change theme">
+      <input onclick="switchThemeClick()" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="themeSwitcher">
+      <label class="onoffswitch-label" for="themeSwitcher"></label>
+    </div>
+  </div>
+  <h2 style="display:inline;" >iden3-playground</h2>
+  <div id="idaddr-header" class="t_primary" style="display:inline;margin-left: 20px;"></div>
+  <hr>
+
+    <a onclick="updateZkFlow()" class="btn btn-outline-danger float-right">Reset Flow</a>
+    <h4>Full steps to generate and use zero knowledge proof</h4>
+    <hr>
+    <div class='col-sm-8' style="margin-left: 25%;">  
+    <div class="row mb-1">
+      <p class="ml-3">Step 1: Create identity and bind a name</p>
+      <button id="but_1" onclick="flow_1()" style="margin-left: 25%; width:50%;" class="btn btn-primary" >Create identity</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_1" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <div class="row mb-2">
+      <p class="ml-3">Step 2: Send information to claim server</p>
+      <button id="but_2" onclick="flow_2()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_2" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <div class="row mb-2">
+      <p class="ml-3">Step 3: Send claim to notification server</p>
+      <button id="but_3" onclick="flow_3()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Send claim</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_3" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <div class="row mb-2">
+      <p class="ml-3">Step 4: Get claim from notification sever</p>
+      <button id="but_4" onclick="flow_4()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Get claim</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_4" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <div class="row mb-2">
+      <p class="ml-3">Step 5: Generate Zk proof of claim</p>
+      <button id="but_5" onclick="flow_5()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate Zk proof</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_5" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    
+    <div class="row mb-2">
+      <p class="ml-3">Step 6: Send Zk proof to Gas station</p>
+      <button id="but_6" onclick="flow_6()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Send and use Zk proof</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_6" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <div class="row mb-2">
+      <p class="ml-3">Step 7: Check Zk smart contract validation</p>
+      <button id="but_7" onclick="flow_7()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Check smart contract validation</button>
+    </div>
+    <div class="progress mb-2">
+      <div id= "progress_7" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+  </div>
+
+  <div id="loading-screen" style="position:absolute; width:100%;height:100%; top:0; left:0; padding-top:20%; z-index:1000;background:#ffffff;text-align:center;">
+    <h2>iden3 playground</h2>
+    <div class="cssload-loader-inner">
+      <div class="cssload-cssload-loader-line-wrap-wrap">
+        <div class="cssload-loader-line-wrap"></div>
+      </div>
+      <div class="cssload-cssload-loader-line-wrap-wrap">
+        <div class="cssload-loader-line-wrap"></div>
+      </div>
+      <div class="cssload-cssload-loader-line-wrap-wrap">
+        <div class="cssload-loader-line-wrap"></div>
+      </div>
+      <div class="cssload-cssload-loader-line-wrap-wrap">
+        <div class="cssload-loader-line-wrap"></div>
+      </div>
+      <div class="cssload-cssload-loader-line-wrap-wrap">
+        <div class="cssload-loader-line-wrap"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="node_modules/toastr/build/toastr.min.js"></script>
+  <script>
+    // color theme
+    let theme = localStorage.getItem("theme");
+    if (theme === "dark-theme") {
+      document.getElementById("themeSwitcher").checked = true;
+      document.body.className = theme;
+    }
+
+    function switchThemeClick() {
+      theme = localStorage.getItem("theme");
+      if (theme === "dark-theme") {
+        document.getElementById("themeSwitcher").checked = false;
+        theme = "light";
+        localStorage.setItem("theme", theme);
+      } else {
+        document.getElementById("themeSwitcher").checked = true;
+        theme = "dark-theme";
+        localStorage.setItem("theme", theme);
+      }
+      document.body.className = theme;
+    }
+
+    // toastr config
+    toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-bottom-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    };
+  </script>
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <script src="js/iden3js-bundle.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/Flow.js"></script>
+  <script>
+    // remove loading-screen, once the full webapp is loaded
+    var elem = document.getElementById('loading-screen');
+    elem.parentNode.removeChild(elem);
+    console.log("loaded");
+    // Set initial state when page is loaded
+    updateZkFlow(); 
+  </script>
+</body>
+
+</html>
