@@ -1,4 +1,3 @@
-
 function select(e) {
   e.focus();
   e.select()
@@ -23,4 +22,12 @@ function randomName() {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+}
+
+function strToHex(str) {
+  var result = '';
+    for (var i=0; i<str.length; i++) {
+      result += str.charCodeAt(i).toString(16);
+    }
+    return result;
 }

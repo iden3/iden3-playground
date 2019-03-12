@@ -53,39 +53,51 @@
 
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 9rem;">Relay URL:</span>
+                  <span class="input-group-text" style="width: 11rem;">Relay URL:</span>
                 </div>
                 <input type="text" class="form-control" id="relay-url">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 9rem;">Relay Addr:</span>
+                  <span class="input-group-text" style="width: 11rem;">Relay Addr:</span>
                 </div>
                 <input type="text" class="form-control" id="relay-addr" value="0xe0fbce58cfaa72812103f003adce3f284fe5fc7c">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 9rem;">Name S. URL:</span>
+                  <span class="input-group-text" style="width: 11rem;">Name S. URL:</span>
                 </div>
                 <input type="text" class="form-control" id="name-server-url">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 9rem;">Name S. Addr:</span>
+                  <span class="input-group-text" style="width: 11rem;">Name S. Addr:</span>
                 </div>
                 <input type="text" class="form-control" id="name-server-addr" value="0xe0fbce58cfaa72812103f003adce3f284fe5fc7c">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 9rem;">Notif. S. URL:</span>
+                  <span class="input-group-text" style="width: 11rem;">Notif. S. URL:</span>
                 </div>
                 <input type="text" class="form-control" id="notification-server-url">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 9rem;">Backup S. URL:</span>
+                  <span class="input-group-text" style="width: 11rem;">Backup S. URL:</span>
                 </div>
                 <input type="text" class="form-control" id="backup-server-url">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 11rem;">ClaimsServer URL:</span>
+                </div>
+                <input type="text" class="form-control" id="claims-server-url">
+              </div>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" style="width: 11rem;">Tx-Forwarder S. URL:</span>
+                </div>
+                <input type="text" class="form-control" id="tx-forwarder-server-url">
               </div>
 
               <a onclick="loadServers()" class="btn btn-primary o_primary float-right mb-4">Load Servers</a>
@@ -321,6 +333,17 @@
           <br><br>
         </div>
       </div>
+      <br>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">tx-forwarder</h5>
+          <hr>
+          <p class="card-text">Use tx-forwarder server to send tx to the smart contract. In the future will be used to send the zkProof to the smart contract</p>
+          <input id="contractData-input" type="text" class="form-control" style="width:300px; display:inline;" placeholder="data input for the smart contract">
+          <a onclick="sendTxToTxForwarder()" class="btn btn-primary o_primary">Send Tx</a>
+          <div id="txforwarder-result"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -394,6 +417,8 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <script src="js/iden3js-bundle.js"></script>
   <script src="js/utils.js"></script>
