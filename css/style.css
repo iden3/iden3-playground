@@ -52,6 +52,7 @@ textarea, input {
 }
 .o_primary:hover {
 	border: 1px solid #0acbd6;
+	color: #24eaf5;
 	background: none!important;
 }
 .t_primary {

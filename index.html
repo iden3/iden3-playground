@@ -29,11 +29,31 @@
       <label class="onoffswitch-label" for="themeSwitcher"></label>
     </div>
   </div>
-  <h2 style="display:inline;" >iden3-playground</h2>
-  <a href='flow.html'>Complete flow</a>
+  <h2 style="display:inline;margin-right: 20px;">iden3-playground</h2>
+  <a href="flow.html" class="btn btn-outline-secondary">Complete flow</a>
   <div id="idaddr-header" class="t_primary" style="display:inline;margin-left: 20px;"></div>
   <hr>
   <p>This is the iden3 playground, to test wallet & libs functionallities</p>
+
+
+
+  <div id="sidepanel" class="sidepanel">
+    <div onclick="sidepanelToggle()" class="sidepanelBtn"></div>
+    <div class="card opaque">
+      <div class="card-body">
+        <div onclick="sidepanelToggle()" class="btn btn-sm o_primary float-right">X</div>
+        <h3>Utils</h3>
+        <h5 class="card-title">Proof of claim verification</h5>
+        <hr>
+        <p>Verify proof of claim, including the 4merkle proofs and the relay signature</p>
+        <input id="relayaddr-input" type="text" placeholder="idaddr of the relay">
+        <textarea id="proofClaimFull-input" rows="3" cols="80" class="textarea-blue" placeholder="Proof of claim to verify"></textarea>
+        <div onclick="verifyProofClaimFull()" class="btn o_primary float-right">Verify Proof of Claim</div>
+        <div id="proofClaimVerification-result" style="margin-top:50px;"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-lg-5">
       <div class="card">
@@ -80,12 +100,6 @@
                   <span class="input-group-text" style="width: 11rem;">Notif. S. URL:</span>
                 </div>
                 <input type="text" class="form-control" id="notification-server-url">
-              </div>
-              <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" style="width: 11rem;">Backup S. URL:</span>
-                </div>
-                <input type="text" class="form-control" id="backup-server-url">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
@@ -143,13 +157,7 @@
               <div id="keysBox"></div>
               <br>
 
-              <h5 class="card-title">Proof of claim verification</h5>
-              <hr>
-              <p>Verify proof of claim, including the 4merkle proofs and the relay signature</p>
-              <input id="relayaddr-input" type="text" placeholder="idaddr of the relay">
-              <textarea id="proofClaimFull-input" rows="3" cols="80" class="textarea-blue" placeholder="Proof of claim to verify"></textarea>
-              <div onclick="verifyProofClaimFull()" class="btn o_primary float-right">Verify Proof of Claim</div>
-              <div id="proofClaimVerification-result" style="margin-top:50px;"></div>
+
             </div>
             <div class="tab-pane fade" id="nav-backup" role="tabpanel" aria-labelledby="nav-backup-tab">
               <h4>Backup</h4>
@@ -177,7 +185,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text" style="width: 9rem;">Backup S. URL:</span>
                 </div>
-                <input type="text" class="form-control" id="backup-server-url" value="http://127.0.0.1:5000/api/unstable">
+                <input type="text" class="form-control" id="backup-server-url">
               </div>
               <div class="input-group mb-2">
                 <div class="input-group-prepend">
@@ -222,7 +230,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">To:</span>
                 </div>
-                  <input type="text" class="form-control" id="notification-send-idAddress" placeholder="id address">
+                <input type="text" class="form-control" id="notification-send-idAddress" placeholder="id address">
               </div>
 
               <div class="input-group mb-2">
@@ -296,56 +304,73 @@
     </div>
     <div class="col-lg-7">
       <div class="card">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-claims-tab" data-toggle="tab" href="#nav-claims" role="tab" aria-controls="nav-claims" aria-selected="true">Emit claims</a>
+            <a class="nav-item nav-link" id="nav-nameserver-tab" data-toggle="tab" href="#nav-nameserver" role="tab" aria-controls="nav-nameserver" aria-selected="false">Name server</a>
+            <a class="nav-item nav-link" id="nav-signatures-tab" data-toggle="tab" href="#nav-signatures" role="tab" aria-controls="nav-signatures" aria-selected="false">Signatures & Login</a>
+            <a class="nav-item nav-link" id="nav-txforwarder-tab" data-toggle="tab" href="#nav-txforwarder" role="tab" aria-controls="nav-txforwarder" aria-selected="false">tx-forwarder</a>
+            <a class="nav-item nav-link" id="nav-zkproofs-tab" data-toggle="tab" href="#nav-zkproofs" role="tab" aria-controls="nav-zkproofs" aria-selected="false">zkProofs</a>
+          </div>
+        </nav>
         <div class="card-body">
-          <h4>Assign name</h4>
-          <hr>
-          <input id="nameInput" class="form-control" type="text" placeholder="name" value="johndoe" style="width:150px; display:inline;"> @iden3.eth
+          <div class="tab-content" id="navActions-content">
+            <div class="tab-pane fade show active" id="nav-claims" role="tabpanel" aria-labelledby="nav-claims-tab">
+              <h5 class="card-title">Claims Actions</h5>
+              <hr>
+            </div>
+            <div class="tab-pane fade" id="nav-nameserver" role="tabpanel" aria-labelledby="nav-nameserver-tab">
+              <h5 class="card-title">Name Server</h5>
+              <hr>
+              <input id="nameInput" class="form-control" type="text" placeholder="name" value="johndoe" style="width:150px; display:inline;"> @iden3.eth
 
-          <a onclick="assignName()" class="btn btn-primary o_primary float-right">Assign Name</a>
-          <br><br>
+              <a onclick="assignName()" class="btn btn-primary o_primary float-right">Assign Name</a>
+              <br><br>
 
-          <textarea id="assignName-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAssignName" readonly="readonly"></textarea>
-          <br>
-          <h5 class="card-title">Login</h5>
-          <hr>
-          <p class="card-text">Paste here the QR data to perform a login</p>
-          <input id="qr-login-input" type="text" class="form-control" style="width:70%; display:inline;" placeholder="QR data">
-          <a onclick="login()" style="width:28%;" class="btn btn-primary o_primary float-right">Login</a>
-          <br><br>
-          <textarea id="login-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="login data packet" readonly="readonly"></textarea>
-          <br>
-          <h5 class="card-title">Sign data</h5>
-          <hr>
-          <p class="card-text">Login, sign packet, etc</p>
-          <input id="toSign" type="text" class="form-control" style="width:300px; display:inline;" placeholder="data to sign">
-          <a onclick="sign()" class="btn btn-primary o_primary">Sign</a>
-          <br><br>
-          <textarea id="signedPacket-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="signed packet" readonly="readonly"></textarea>
+              <textarea id="assignName-result" rows="3" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="proof of ClaimAssignName" readonly="readonly"></textarea>
 
-        </div>
-      </div>
-      <br>
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Zero Knowledge Proofs</h5>
-          <hr>
-          <p class="card-text">Generate and verify ZKP</p>
-          <br><br>
-        </div>
-      </div>
-      <br>
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">tx-forwarder</h5>
-          <hr>
-          <p class="card-text">Use tx-forwarder server to send tx to the smart contract. In the future will be used to send the zkProof to the smart contract</p>
-          <input id="contractData-input" type="text" class="form-control" style="width:300px; display:inline;" placeholder="data input for the smart contract">
-          <a onclick="sendTxToTxForwarder()" class="btn btn-primary o_primary">Send Tx</a>
-          <div id="txforwarder-result"></div>
+            </div>
+            <div class="tab-pane fade" id="nav-signatures" role="tabpanel" aria-labelledby="nav-signatures-tab">
+              <h5 class="card-title">Signatures & Login</h5>
+              <hr>
+              <h5 class="card-title">Login</h5>
+              <hr>
+              <p class="card-text">Paste here the QR data to perform a login</p>
+              <input id="qr-login-input" type="text" class="form-control" style="width:70%; display:inline;" placeholder="QR data">
+              <a onclick="login()" style="width:28%;" class="btn btn-primary o_primary float-right">Login</a>
+              <br><br>
+              <textarea id="login-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="login data packet" readonly="readonly"></textarea>
+              <br>
+              <h5 class="card-title">Sign data</h5>
+              <hr>
+              <p class="card-text">Login, sign packet, etc</p>
+              <input id="toSign" type="text" class="form-control" style="width:300px; display:inline;" placeholder="data to sign">
+              <a onclick="sign()" class="btn btn-primary o_primary">Sign</a>
+              <br><br>
+              <textarea id="signedPacket-result" rows="2" cols="80" class="textarea-blue" onclick="selectAndCopy(this)" placeholder="signed packet" readonly="readonly"></textarea>
+
+            </div>
+            <div class="tab-pane fade" id="nav-txforwarder" role="tabpanel" aria-labelledby="nav-txforwarder-tab">
+              <h5 class="card-title">tx-forwarder</h5>
+              <hr>
+              <p class="card-text">Use tx-forwarder server to send tx to the smart contract. In the future will be used to send the zkProof to the smart contract</p>
+              <input id="contractData-input" type="text" class="form-control" style="width:300px; display:inline;" placeholder="data input for the smart contract">
+              <a onclick="sendTxToTxForwarder()" class="btn btn-primary o_primary">Send Tx</a>
+              <div id="txforwarder-result"></div>
+            </div>
+            <div class="tab-pane fade" id="nav-zkproofs" role="tabpanel" aria-labelledby="nav-zkproofs-tab">
+              <h5 class="card-title">zkProofs</h5>
+              <hr>
+              <p class="card-text">Generate and verify ZKP</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+
+
 
   <div id="loading-screen" style="position:absolute; width:100%;height:100%; top:0; left:0; padding-top:20%; z-index:1000;background:#ffffff;text-align:center;">
     <h2>iden3 playground</h2>

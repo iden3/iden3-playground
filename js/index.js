@@ -570,6 +570,11 @@ function sendTxToTxForwarder() {
     toastr.error("Servers not loaded");
     return;
   }
+  document.getElementById('txforwarder-result').innerHTML = `
+  <div class="spinner-border" role="status">
+<span class="sr-only">Loading...</span>
+</div>
+  `;
   let dataStr = document.getElementById('contractData-input').value;
   axios.post(`${servers.txforwarderServerUrl}/tx`, { addr: g.id.idAddr, dataHex: strToHex(dataStr)})
     .then(function(res) {
@@ -580,5 +585,6 @@ function sendTxToTxForwarder() {
     })
     .catch(function(err) {
       toastr.error('error sending tx');
+      document.getElementById('txforwarder-result').innerHTML = '';
     });
 }

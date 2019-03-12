@@ -31,3 +31,14 @@ function strToHex(str) {
     }
     return result;
 }
+
+let sidepanel = false;
+function sidepanelToggle() {
+  if(sidepanel) {
+    sidepanel = false;
+    document.getElementById('sidepanel').className = 'sidepanel';
+  } else {
+    sidepanel = true;
+    document.getElementById('sidepanel').className = 'sidepanel sidepanelShow';
+  }
+}

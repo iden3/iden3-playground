@@ -29,69 +29,75 @@
       <label class="onoffswitch-label" for="themeSwitcher"></label>
     </div>
   </div>
-  <h2 style="display:inline;" >iden3-playground</h2>
-  <div id="idaddr-header" class="t_primary" style="display:inline;margin-left: 20px;"></div>
-  <hr>
+
+  <div class="container">
+    <a href="/" style="color:#ffffff!important;"><h2 style="display:inline;">iden3-playground</h2></a>
+    <div id="idaddr-header" class="t_primary" style="display:inline;margin-left: 20px;"></div>
+    <hr>
 
     <a onclick="updateZkFlow()" class="btn btn-outline-danger float-right">Reset Flow</a>
     <h4>Full steps to generate and use zero knowledge proof</h4>
-    <hr>
-    <div class='col-sm-8' style="margin-left: 25%;">  
-    <div class="row mb-1">
-      <p class="ml-3">Step 1: Create identity and bind a name</p>
-      <button id="but_1" onclick="flow_1()" style="margin-left: 25%; width:50%;" class="btn btn-primary" >Create identity</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_1" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="row">
+      <div class="col-lg-2"></div>
+      <div class='col-lg-8'>
+        <div class="row mb-1">
+          <p class="ml-3">Step 1: Create identity and bind a name</p>
+          <button id="but_1" onclick="flow_1()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Create identity</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_1" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="row mb-2">
+          <p class="ml-3">Step 2: Send information to claim server</p>
+          <button id="but_2" onclick="flow_2()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_2" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="row mb-2">
+          <p class="ml-3">Step 3: Send claim to notification server</p>
+          <button id="but_3" onclick="flow_3()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Send claim</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_3" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="row mb-2">
+          <p class="ml-3">Step 4: Get claim from notification sever</p>
+          <button id="but_4" onclick="flow_4()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Get claim</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_4" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="row mb-2">
+          <p class="ml-3">Step 5: Generate Zk proof of claim</p>
+          <button id="but_5" onclick="flow_5()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate Zk proof</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_5" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="row mb-2">
+          <p class="ml-3">Step 6: Send Zk proof to Gas station</p>
+          <button id="but_6" onclick="flow_6()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Send and use Zk proof</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_6" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="row mb-2">
+          <p class="ml-3">Step 7: Check Zk smart contract validation</p>
+          <button id="but_7" onclick="flow_7()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Check smart contract validation</button>
+        </div>
+        <div class="progress mb-2">
+          <div id="progress_7" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="row mb-2">
-      <p class="ml-3">Step 2: Send information to claim server</p>
-      <button id="but_2" onclick="flow_2()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_2" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
-    <div class="row mb-2">
-      <p class="ml-3">Step 3: Send claim to notification server</p>
-      <button id="but_3" onclick="flow_3()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Send claim</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_3" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
-    <div class="row mb-2">
-      <p class="ml-3">Step 4: Get claim from notification sever</p>
-      <button id="but_4" onclick="flow_4()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Get claim</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_4" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
-    <div class="row mb-2">
-      <p class="ml-3">Step 5: Generate Zk proof of claim</p>
-      <button id="but_5" onclick="flow_5()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate Zk proof</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_5" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-    
-    <div class="row mb-2">
-      <p class="ml-3">Step 6: Send Zk proof to Gas station</p>
-      <button id="but_6" onclick="flow_6()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Send and use Zk proof</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_6" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
-    <div class="row mb-2">
-      <p class="ml-3">Step 7: Check Zk smart contract validation</p>
-      <button id="but_7" onclick="flow_7()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Check smart contract validation</button>
-    </div>
-    <div class="progress mb-2">
-      <div id= "progress_7" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
   </div>
 
   <div id="loading-screen" style="position:absolute; width:100%;height:100%; top:0; left:0; padding-top:20%; z-index:1000;background:#ffffff;text-align:center;">
@@ -167,14 +173,14 @@
 
   <script src="js/iden3js-bundle.js"></script>
   <script src="js/utils.js"></script>
-  <script src="js/Flow.js"></script>
+  <script src="js/flow.js"></script>
   <script>
     // remove loading-screen, once the full webapp is loaded
     var elem = document.getElementById('loading-screen');
     elem.parentNode.removeChild(elem);
     console.log("loaded");
     // Set initial state when page is loaded
-    updateZkFlow(); 
+    updateZkFlow();
   </script>
 </body>
 
