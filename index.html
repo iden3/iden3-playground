@@ -30,6 +30,7 @@
     </div>
   </div>
   <h2 style="display:inline;" >iden3-playground</h2>
+  <a href='flow.html'>Complete flow</a>
   <div id="idaddr-header" class="t_primary" style="display:inline;margin-left: 20px;"></div>
   <hr>
   <p>This is the iden3 playground, to test wallet & libs functionallities</p>
@@ -42,7 +43,6 @@
             <a class="nav-item nav-link" id="nav-backup-tab" data-toggle="tab" href="#nav-backup" role="tab" aria-controls="nav-backup" aria-selected="false">Backup</a>
             <a class="nav-item nav-link" id="nav-settings-tab" data-toggle="tab" href="#nav-settings" role="tab" aria-controls="nav-settings" aria-selected="false">Settings</a>
             <a class="nav-item nav-link" id="nav-notifications-tab" onfocus="updateNotificationsPanel()" data-toggle="tab" href="#nav-notifications" role="tab" aria-controls="nav-notifications" aria-selected="false">Notifications</a>
-            <a class="nav-item nav-link" id="nav-zkFlow-tab" onfocus="updateZkFlow()" data-toggle="tab" href="#nav-zkFlow" role="tab" aria-controls="nav-flow" aria-selected="false">Zk flow</a>
           </div>
         </nav>
         <div class="card-body">
@@ -274,72 +274,6 @@
               -->
 
             </div>
-
-            <div class="tab-pane fade" id="nav-zkFlow" role="tabpanel" aria-labelledby="nav-zkFlow-tab">
-              <a onclick="updateZkFlow()" class="btn btn-outline-danger float-right">Reset Flow</a>
-              <h4>Zk flow</h4>
-              <hr>
-              <div class="row mb-1">
-                <p class="ml-3">Step 1: Create identity and bind a name</p>
-                <button id="but_1" onclick="flow_1()" style="margin-left: 25%; width:50%;" class="btn btn-primary" >Create identity</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_1" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-
-              <div class="row mb-2">
-                <p class="ml-3">Step 2: Send information to claim server</p>
-                <button id="but_2" onclick="flow_2()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_2" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-
-              <div class="row mb-2">
-                <p class="ml-3">Step 3: Send claim to notification server</p>
-                <button id="but_3" onclick="flow_3()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_3" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-
-              <div class="row mb-2">
-                <p class="ml-3">Step 4: Get claim from notification sever</p>
-                <button id="but_4" onclick="flow_4()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_4" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-
-              <div class="row mb-2">
-                <p class="ml-3">Step 5: Generate Zk proof of claim</p>
-                <button id="but_5" onclick="flow_5()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_5" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              
-              <div class="row mb-2">
-                <p class="ml-3">Step 6: Send Zk proof to Gas station</p>
-                <button id="but_6" onclick="flow_6()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_6" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-
-              <div class="row mb-2">
-                <p class="ml-3">Step 7: Check Zk smart contract validation</p>
-                <button id="but_7" onclick="flow_7()" style="margin-left: 25%; width:50%;" class="btn btn-primary">Generate claim through server claim</button>
-              </div>
-              <div class="progress mb-2">
-                <div id= "progress_7" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-
-            </div>
-
-
-
-
             <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
               <div onclick="appReset()" class="btn o_secundary">Hard reset</div>
             </div>

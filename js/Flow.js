@@ -14,7 +14,7 @@ let proofEthNameFlow = undefined;
 
 function loadObjects() {
   dbFlow = new iden3.Db();
-  kcFlow = new iden3.KeyContainer('localStorage', db);
+  kcFlow = new iden3.KeyContainer('localStorage', dbFlow);
   relayFlow = new iden3.Relay('http://127.0.0.1:8000/api/unstable');
   nameFlow = new iden3.NameServer('http://127.0.0.1:7000/api/unstable');
   notFlow = new iden3.NotificationServer('http://127.0.0.1:10000/api/unstable');
