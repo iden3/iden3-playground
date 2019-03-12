@@ -81,6 +81,8 @@ function setServersUrl() {
   let nameServerUrl = document.getElementById('name-server-url');
   let notificationServerUrl = document.getElementById('notification-server-url');
   let backupServerUrl = document.getElementById("backup-server-url");
+  let claimsServerUrl = document.getElementById('claims-server-url');
+  let txforwarderServerUrl = document.getElementById('tx-forwarder-server-url');
 
   let hostname = window.location.hostname;
   if (relayUrl.value === "") {
@@ -95,6 +97,12 @@ function setServersUrl() {
   if (backupServerUrl.value === "") {
     backupServerUrl.value = `http://${hostname}:5000/api/unstable`;
   }
+  if (claimsServerUrl.value === "") {
+    claimsServerUrl.value = `http://${hostname}:6000/api/unstable`;
+  }
+  if (txforwarderServerUrl.value === "") {
+    txforwarderServerUrl.value = `http://${hostname}:11000/api/unstable`;
+  }
 }
 
 setServersUrl();
@@ -107,6 +115,8 @@ function loadServers() {
   servers.nameServerUrl = document.getElementById('name-server-url').value;
   servers.nameServerAddr = document.getElementById('name-server-addr').value;
   servers.notificationServerUrl = document.getElementById('notification-server-url').value;
+  servers.claimsServerUrl = document.getElementById('claims-server-url').value;
+  servers.txforwarderServerUrl = document.getElementById('tx-forwarder-server-url').value;
 
   toastr.info('Servers loaded');
 }
@@ -554,3 +564,21 @@ function verifyProofClaimFull() {
 // const proofKeyTest = JSON.parse(document.getElementById('proofClaimOperationalKey-result').innerHTML);
 // const login = await id.loginNotificationServer(proofEthName, kc, id.keyOperationalPub, proofKSign);
 // console.log(id.notificationServer);
+
+function sendTxToTxForwarder() {
+  if (servers==null) {
+    toastr.error("Servers not loaded");
+    return;
+  }
+  let dataStr = document.getElementById('contractData-input').value;
+  axios.post(`${servers.txforwarderServerUrl}/tx`, { addr: g.id.idAddr, dataHex: strToHex(dataStr)})
+    .then(function(res) {
+      console.log("res", res.data);
+      toastr.success('data sent');
+      document.getElementById('contractData-input').value = '';
+      document.getElementById('txforwarder-result').innerHTML = 'eth tx: <br><code>' + res.data.ethTx + '</code>';
+    })
+    .catch(function(err) {
+      toastr.error('error sending tx');
+    });
+}

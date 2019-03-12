@@ -20,3 +20,7 @@
 .dark-theme #loading-screen {
   background: #171a1c!important;
 }
+.dark-theme .input-group-text {
+  color: #d9d9d9;
+  background: #2e3438;
+}
