@@ -58,12 +58,12 @@ textarea, input {
 .t_primary {
 	color: #0acbd6;
 }
-.o_secundary {
+.o_secondary {
 	border: 1px solid #b075ff;
 	color: #b075ff!important;
 	background: none!important;
 }
-.o_secundary:hover {
+.o_secondary:hover {
 	border: 1px solid #d4b3ff;
 	color: #d4b3ff!important;
 	background: none!important;
