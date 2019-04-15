@@ -9,6 +9,7 @@
   "author": "iden3",
   "license": "GPL3",
   "dependencies": {
+    "codemirror": "^5.45.0",
     "http-server": "^0.11.1",
     "toastr": "^2.1.4"
   }
