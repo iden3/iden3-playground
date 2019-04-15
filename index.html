@@ -358,30 +358,64 @@
               <a onclick="sendTxToTxForwarder()" class="btn btn-primary o_primary">Send Tx</a>
               <div id="txforwarder-result"></div>
             </div>
+
+
             <div class="tab-pane fade show active" id="nav-zkproofs" role="tabpanel" aria-labelledby="nav-zkproofs-tab">
               <h5 class="card-title">Write circuit</h5>
               <hr>
-              <textarea id="inputCircuit" rows="3" style="width:100%;" class="textarea-blue" placeholder="write your circuit here"></textarea>
+              <span>Circuit:</span>
+              <textarea id="inputCircuit" rows="3" style="width:100%;" class="textarea-blue" placeholder="write your circuit here">
+                template Multiplier() {
+                	 signal private input a;
+                	 signal private input b;
+                	 signal output c;
+                	 c <== a*b;
+                }
+                component main = Multiplier();
+              </textarea>
               <a onclick="loadCircuit()" class="btn btn-primary o_primary">Compile circuit</a>
 	      <br><br>
+              <span>Circuit compilation output:</span>
               <textarea id="compiledCircuitOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="compiled circuit will appear here"></textarea>
               <a onclick="calculateSetup()" class="btn btn-primary o_secondary">Calculate setup</a>
 	      <br><br>
-              <textarea id="provingKeyOutput" rows="3" style="width:45%;" class="textarea-blue" placeholder="proving key"></textarea>
-              <textarea id="verificationKeyOutput" rows="3" style="width:45%;" class="textarea-blue" placeholder="verification key"></textarea>
-              <a onclick="calculateSetup()" class="btn btn-primary o_primary">Calculate witness</a>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span>Proving Key:</span>
+                  <textarea id="provingKeyOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="proving key"></textarea>
+                </div>
+                <div class="col-sm-6">
+                  <span>Verification Key:</span>
+                  <textarea id="verificationKeyOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="verification key"></textarea>
+                </div>
+              </div>
+              <a onclick="calculateWitness()" class="btn btn-primary o_primary">Calculate witness</a>
 	      <br><br>
+              <span>Witness:</span>
               <textarea id="witnessOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="Witness output"></textarea>
 	      <br><br>
               <h5 class="card-title">Generate Proof</h5>
               <hr>
-              <textarea id="circuitInputs" rows="3" style="width:100%;" class="textarea-blue" placeholder="circuit inputs"></textarea>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span>Circuit Inputs:</span>
+                  <textarea id="circuitInputs" rows="3" style="width:100%;" class="textarea-blue" placeholder="circuit inputs">
+                    {"a": 3, "b": 11}
+                  </textarea>
+                </div>
+                <div class="col-sm-6">
+                  <span>Public Signals:</span>
+                  <textarea id="publicSignals" rows="3" style="width:100%;" class="textarea-blue" placeholder="public signals"></textarea>
+                </div>
+              </div>
               <a onclick="generateProof()" class="btn btn-primary o_primary">Generate Proof</a>
 	      <br><br>
               <h5 class="card-title">Verify ZKP</h5>
               <hr>
               <textarea id="proofOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="zkProof will be printed here"></textarea>
               <a onclick="verifyProof()" class="btn btn-primary o_primary">Verify Proof</a>
+              <br><br>
+              <div id="zkverifiedresult"></div>
             </div>
           </div>
         </div>
@@ -466,9 +500,12 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <script src="js/iden3js-bundle.js"></script>
+  <script src="js/circom-bundle.js"></script>
+  <script src="js/snarkjs-bundle.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/index.js"></script>
-  <script src="js/Flow.js"></script>
+  <script src="js/flow.js"></script>
+  <script src="js/zkp.js"></script>
   <script>
     // remove loading-screen, once the full webapp is loaded
     var elem = document.getElementById('loading-screen');
