@@ -295,7 +295,7 @@
 
             </div>
             <div class="tab-pane fade" id="nav-settings" role="tabpanel" aria-labelledby="nav-settings-tab">
-              <div onclick="appReset()" class="btn o_secundary">Hard reset</div>
+              <div onclick="appReset()" class="btn o_secondary">Hard reset</div>
             </div>
           </div>
         </div>
@@ -306,16 +306,16 @@
       <div class="card">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-claims-tab" data-toggle="tab" href="#nav-claims" role="tab" aria-controls="nav-claims" aria-selected="true">Emit claims</a>
+            <a class="nav-item nav-link" id="nav-claims-tab" data-toggle="tab" href="#nav-claims" role="tab" aria-controls="nav-claims" aria-selected="true">Emit claims</a>
             <a class="nav-item nav-link" id="nav-nameserver-tab" data-toggle="tab" href="#nav-nameserver" role="tab" aria-controls="nav-nameserver" aria-selected="false">Name server</a>
             <a class="nav-item nav-link" id="nav-signatures-tab" data-toggle="tab" href="#nav-signatures" role="tab" aria-controls="nav-signatures" aria-selected="false">Signatures & Login</a>
             <a class="nav-item nav-link" id="nav-txforwarder-tab" data-toggle="tab" href="#nav-txforwarder" role="tab" aria-controls="nav-txforwarder" aria-selected="false">tx-forwarder</a>
-            <a class="nav-item nav-link" id="nav-zkproofs-tab" data-toggle="tab" href="#nav-zkproofs" role="tab" aria-controls="nav-zkproofs" aria-selected="false">zkProofs</a>
+            <a class="nav-item nav-link active" id="nav-zkproofs-tab" data-toggle="tab" href="#nav-zkproofs" role="tab" aria-controls="nav-zkproofs" aria-selected="false">zkProofs</a>
           </div>
         </nav>
         <div class="card-body">
           <div class="tab-content" id="navActions-content">
-            <div class="tab-pane fade show active" id="nav-claims" role="tabpanel" aria-labelledby="nav-claims-tab">
+            <div class="tab-pane fade" id="nav-claims" role="tabpanel" aria-labelledby="nav-claims-tab">
               <h5 class="card-title">Claims Actions</h5>
               <hr>
             </div>
@@ -358,10 +358,64 @@
               <a onclick="sendTxToTxForwarder()" class="btn btn-primary o_primary">Send Tx</a>
               <div id="txforwarder-result"></div>
             </div>
-            <div class="tab-pane fade" id="nav-zkproofs" role="tabpanel" aria-labelledby="nav-zkproofs-tab">
-              <h5 class="card-title">zkProofs</h5>
+
+
+            <div class="tab-pane fade show active" id="nav-zkproofs" role="tabpanel" aria-labelledby="nav-zkproofs-tab">
+              <h5 class="card-title">Write circuit</h5>
               <hr>
-              <p class="card-text">Generate and verify ZKP</p>
+              <span>Circuit:</span>
+              <textarea id="inputCircuit" rows="3" style="width:100%;" class="textarea-blue" placeholder="write your circuit here">
+                template Multiplier() {
+                	 signal private input a;
+                	 signal private input b;
+                	 signal output c;
+                	 c <== a*b;
+                }
+                component main = Multiplier();
+              </textarea>
+              <a onclick="loadCircuit()" class="btn btn-primary o_primary">Compile circuit</a>
+	      <br><br>
+              <span>Circuit compilation output:</span>
+              <textarea id="compiledCircuitOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="compiled circuit will appear here"></textarea>
+              <a onclick="calculateSetup()" class="btn btn-primary o_secondary">Calculate setup</a>
+	      <br><br>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span>Proving Key:</span>
+                  <textarea id="provingKeyOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="proving key"></textarea>
+                </div>
+                <div class="col-sm-6">
+                  <span>Verification Key:</span>
+                  <textarea id="verificationKeyOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="verification key"></textarea>
+                </div>
+              </div>
+              <a onclick="calculateWitness()" class="btn btn-primary o_primary">Calculate witness</a>
+	      <br><br>
+              <span>Witness:</span>
+              <textarea id="witnessOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="Witness output"></textarea>
+	      <br><br>
+              <h5 class="card-title">Generate Proof</h5>
+              <hr>
+              <div class="row">
+                <div class="col-sm-6">
+                  <span>Circuit Inputs:</span>
+                  <textarea id="circuitInputs" rows="3" style="width:100%;" class="textarea-blue" placeholder="circuit inputs">
+                    {"a": 3, "b": 11}
+                  </textarea>
+                </div>
+                <div class="col-sm-6">
+                  <span>Public Signals:</span>
+                  <textarea id="publicSignals" rows="3" style="width:100%;" class="textarea-blue" placeholder="public signals"></textarea>
+                </div>
+              </div>
+              <a onclick="generateProof()" class="btn btn-primary o_primary">Generate Proof</a>
+	      <br><br>
+              <h5 class="card-title">Verify ZKP</h5>
+              <hr>
+              <textarea id="proofOutput" rows="3" style="width:100%;" class="textarea-blue" placeholder="zkProof will be printed here"></textarea>
+              <a onclick="verifyProof()" class="btn btn-primary o_primary">Verify Proof</a>
+              <br><br>
+              <div id="zkverifiedresult"></div>
             </div>
           </div>
         </div>
@@ -446,9 +500,12 @@
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <script src="js/iden3js-bundle.js"></script>
+  <script src="js/circom-bundle.js"></script>
+  <script src="js/snarkjs-bundle.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/index.js"></script>
-  <script src="js/Flow.js"></script>
+  <script src="js/flow.js"></script>
+  <script src="js/zkp.js"></script>
   <script>
     // remove loading-screen, once the full webapp is loaded
     var elem = document.getElementById('loading-screen');
